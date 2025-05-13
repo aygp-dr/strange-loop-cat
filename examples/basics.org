@@ -1,0 +1,247 @@
+#+TITLE: Basics of Categories and Morphisms
+#+AUTHOR: Aidan Pace
+#+EMAIL: apace@defrecord.com
+#+DATE: 2025-05-11
+#+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes
+#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes
+#+PROPERTY: header-args:mermaid :file ../images/diagrams/:results file :exports both
+#+OPTIONS: toc:3 num:3 
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+
+* Categories: The Basic Structure
+
+A category consists of:
+- Objects
+- Morphisms between objects
+- Composition of morphisms
+- Identity morphisms for each object
+
+Let's explore these concepts interactively using Guile Scheme.
+
+** Loading the Category Module
+
+First, let's load our category theory module:
+
+#+begin_src scheme
+(add-to-load-path "../src/guile")
+(use-modules (category))
+
+(display "Category theory module loaded successfully.\n")
+#+end_src
+
+#+RESULTS:
+: ;;; compiling ../src/guile/category.scm
+: ;;; compiled /home/aygp-dr/.cache/guile/ccache/3.0-LE-8-4.6/home/aygp-dr/projects/aygp-dr/strange-loop-cat/src/guile/category.scm.go
+: Category theory module loaded successfully.
+
+** Creating a Simple Category
+
+Let's create a simple category with three objects and some morphisms:
+
+#+begin_src scheme
+;; Create objects
+(define a (make-object "A"))
+(define b (make-object "B"))
+(define c (make-object "C"))
+
+;; Create morphisms
+(define f (make-morphism "f" a b))
+(define g (make-morphism "g" b c))
+
+;; Display our objects and morphisms
+(display "Objects:\n")
+(display a) (newline)
+(display b) (newline)
+(display c) (newline)
+
+(display "\nMorphisms:\n")
+(display f) (newline)
+(display g) (newline)
+#+end_src
+
+** Composition of Morphisms
+
+One of the key operations in a category is composition of morphisms:
+
+#+begin_src scheme
+;; Compose morphisms g and f
+(define g-after-f (compose f g))
+
+(display "Composition g ∘ f: ")
+(display g-after-f)
+(newline)
+#+end_src
+
+** Identity Morphisms
+
+Every object in a category has an identity morphism:
+
+#+begin_src scheme
+;; Create identity morphisms
+(define id-a (identity a))
+(define id-b (identity b))
+(define id-c (identity c))
+
+(display "Identity morphisms:\n")
+(display id-a) (newline)
+(display id-b) (newline)
+(display id-c) (newline)
+#+end_src
+
+** Visualizing Our Category
+
+Let's visualize our simple category using a Mermaid diagram:
+
+#+begin_src mermaid :file ../images/diagrams/simple-category.mmd
+graph LR
+    A((A)) --> |f| B((B))
+    B((B)) --> |g| C((C))
+    A((A)) --> |"g ∘ f"| C((C))
+    A((A)) --> |"id_A"| A((A))
+    B((B)) --> |"id_B"| B((B))
+    C((C)) --> |"id_C"| C((C))
+#+end_src
+
+** Set: A Fundamental Category
+
+The category *Set* is one of the most fundamental categories:
+- Objects are sets
+- Morphisms are functions between sets
+- Composition is function composition
+- Identity morphisms are identity functions
+
+Let's implement a simple example of the category Set:
+
+#+begin_src scheme
+;; Define some sets (as lists for simplicity)
+(define set-a '(1 2 3))
+(define set-b '("a" "b"))
+(define set-c '(#t #f))
+
+;; Define functions (these are simplified for demonstration)
+(define (func-f x)
+  (if (= x 1) "a" "b"))
+
+(define (func-g y)
+  (if (string=? y "a") #t #f))
+
+;; Manually apply functions to elements
+(display "Applying f to elements of A:\n")
+(for-each (lambda (x)
+            (format #t "f(~a) = ~a\n" x (func-f x)))
+          set-a)
+
+(display "\nApplying g to elements of B:\n")
+(for-each (lambda (y)
+            (format #t "g(~a) = ~a\n" y (func-g y)))
+          set-b)
+
+;; Composing functions
+(define (g-compose-f x)
+  (func-g (func-f x)))
+
+(display "\nApplying g ∘ f to elements of A:\n")
+(for-each (lambda (x)
+            (format #t "(g ∘ f)(~a) = ~a\n" x (g-compose-f x)))
+          set-a)
+#+end_src
+
+* Categorical Properties
+
+** Isomorphisms
+
+An isomorphism in a category is a morphism f: A → B for which there exists a morphism g: B → A such that g ∘ f = id_A and f ∘ g = id_B.
+
+#+begin_src scheme
+;; Create objects
+(define x (make-object "X"))
+(define y (make-object "Y"))
+
+;; Create isomorphic morphisms
+(define f-xy (make-morphism "f" x y))
+(define g-yx (make-morphism "g" y x))
+
+;; Check compositions
+(define f-after-g (compose g-yx f-xy))
+(define g-after-f (compose f-xy g-yx))
+
+(display "f ∘ g: ") (display f-after-g) (newline)
+(display "g ∘ f: ") (display g-after-f) (newline)
+
+;; Compare with identities
+(define id-x (identity x))
+(define id-y (identity y))
+
+(display "id_X: ") (display id-x) (newline)
+(display "id_Y: ") (display id-y) (newline)
+
+;; In a complete implementation, we would check if f-after-g equals id-y
+;; and g-after-f equals id-x
+#+end_src
+
+** Monomorphisms and Epimorphisms
+
+- A monomorphism (monic) is a morphism f such that for all morphisms g₁, g₂: if f ∘ g₁ = f ∘ g₂, then g₁ = g₂
+- An epimorphism (epic) is a morphism f such that for all morphisms g₁, g₂: if g₁ ∘ f = g₂ ∘ f, then g₁ = g₂
+
+Let's visualize these concepts:
+
+#+begin_src mermaid :file ../images/diagrams/mono-epi.mmd
+graph TD
+    subgraph "Monomorphism"
+    X1((X)) --> |g₁| A1((A))
+    X1 --> |g₂| A1
+    A1 --> |f| B1((B))
+    end
+    
+    subgraph "Epimorphism"
+    A2((A)) --> |f| B2((B))
+    B2 --> |g₁| Y2((Y))
+    B2 --> |g₂| Y2
+    end
+#+end_src
+
+* Self-Reference and Strange Loops
+
+** The Concept of Strange Loops
+
+A "strange loop" is a phenomenon where moving through a hierarchical system brings you back to where you started. In category theory, this can be represented by certain kinds of endomorphisms and fixed points.
+
+Let's visualize a simple strange loop:
+
+#+begin_src mermaid :file ../images/diagrams/strange-loop.mmd
+graph TD
+    A((A)) --> |f| B((B))
+    B --> |g| C((C))
+    C --> |h| A
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style C fill:#bfb,stroke:#333,stroke-width:2px
+#+end_src
+
+** Connection to Gödel's Incompleteness Theorem
+
+Gödel's famous theorem uses self-reference to show that in any consistent formal system strong enough to express basic arithmetic, there are statements that cannot be proven or disproven within the system.
+
+This is similar to the concept of initial and terminal objects in categories, where certain structures cannot be "reached" from within the system itself.
+
+#+begin_src mermaid :file ../images/diagrams/godel-reference.mmd
+graph TD
+    A((Formal System)) --> |"Contains"| B((Statements))
+    B --> |"Some refer to"| A
+    B --> |"Include G"| C(("G: 'G cannot be proven'"))
+    C --> |"References"| C
+    
+    style C fill:#f99,stroke:#333,stroke-width:2px
+#+end_src
+
+* Exercises
+
+1. Create a category with four objects and morphisms that form a "square" with compositions along the diagonals.
+
+2. Implement a simple functor between two small categories.
+
+3. Find an example of a strange loop in everyday life and try to model it using categorical concepts.
+
+4. Think about how self-reference in programming (recursive functions) relates to categorical concepts.

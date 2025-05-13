@@ -1,0 +1,14 @@
+graph LR
+    subgraph "Category C"
+    A((A)) --> |f| B((B))
+    B((B)) --> |g| C((C))
+    end
+    
+    subgraph "Category D"
+    FA((F(A))) --> |F(f)| FB((F(B)))
+    FB((F(B))) --> |F(g)| FC((F(C)))
+    end
+    
+    A -.-> |F| FA
+    B -.-> |F| FB
+    C -.-> |F| FC

@@ -1,0 +1,288 @@
+#+TITLE: Strange Loops and Self-Reference
+#+AUTHOR: Aidan Pace
+#+EMAIL: apace@defrecord.com
+#+DATE: 2025-05-11
+#+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes
+#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes
+#+PROPERTY: header-args:mermaid :file ../images/diagrams/:results file :exports both
+#+OPTIONS: toc:3 num:3 
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+
+* Functors: Mappings Between Categories
+
+Functors are structure-preserving maps between categories. They map:
+- Objects to objects
+- Morphisms to morphisms
+- Preserve compositions and identities
+
+** Basic Functor Concepts
+
+Let's load our category theory module first:
+
+#+begin_src scheme
+(add-to-load-path "../src/guile")
+(use-modules (category))
+
+(display "Category theory module loaded successfully.\n")
+#+end_src
+
+** Creating Source and Target Categories
+
+Let's create two simple categories to work with:
+
+#+begin_src scheme
+;; Category C
+(define c-obj1 (make-object "C1"))
+(define c-obj2 (make-object "C2"))
+(define c-mor (make-morphism "f" c-obj1 c-obj2))
+(define c-id1 (identity c-obj1))
+(define c-id2 (identity c-obj2))
+(define cat-c (make-category "C" (list c-obj1 c-obj2) (list c-mor c-id1 c-id2)))
+
+;; Category D
+(define d-obj1 (make-object "D1"))
+(define d-obj2 (make-object "D2"))
+(define d-mor (make-morphism "g" d-obj1 d-obj2))
+(define d-id1 (identity d-obj1))
+(define d-id2 (identity d-obj2))
+(define cat-d (make-category "D" (list d-obj1 d-obj2) (list d-mor d-id1 d-id2)))
+
+;; Display our categories
+(display "Category C:\n")
+(display cat-c) (newline)
+(display "\nCategory D:\n")
+(display cat-d) (newline)
+#+end_src
+
+** Implementing a Simple Functor
+
+Now let's define a functor F from category C to category D:
+
+#+begin_src scheme
+;; Define a functor as a mapping of objects and morphisms
+(define (functor-obj obj)
+  (cond ((equal? obj c-obj1) d-obj1)
+        ((equal? obj c-obj2) d-obj2)
+        (else (error "Object not in source category"))))
+
+(define (functor-mor mor)
+  (let ((name (cadr mor))
+        (domain (caddr mor))
+        (codomain (cadddr mor)))
+    (cond ((equal? name "f") d-mor)
+          ((equal? name "id_C1") d-id1)
+          ((equal? name "id_C2") d-id2)
+          (else (error "Morphism not in source category")))))
+
+;; Apply functor to objects
+(display "Applying functor to objects:\n")
+(display "F(C1) = ") (display (functor-obj c-obj1)) (newline)
+(display "F(C2) = ") (display (functor-obj c-obj2)) (newline)
+
+;; Apply functor to morphisms
+(display "\nApplying functor to morphisms:\n")
+(display "F(f: C1 → C2) = ") (display (functor-mor c-mor)) (newline)
+(display "F(id_C1) = ") (display (functor-mor c-id1)) (newline)
+#+end_src
+
+** Visualizing a Functor
+
+Let's visualize how a functor maps between categories:
+
+#+begin_src mermaid :file ../images/diagrams/functor-vis.mmd
+graph TB
+    subgraph "Category C"
+    C1((C1)) --> |f| C2((C2))
+    C1 --> |"id_C1"| C1
+    C2 --> |"id_C2"| C2
+    end
+    
+    subgraph "Category D"
+    D1((D1)) --> |g| D2((D2))
+    D1 --> |"id_D1"| D1
+    D2 --> |"id_D2"| D2
+    end
+    
+    C1 -.-> |F| D1
+    C2 -.-> |F| D2
+    classDef default fill:#f9f,stroke:#333,stroke-width:1px;
+#+end_src
+
+* Types of Functors
+
+** Covariant vs. Contravariant Functors
+
+There are two main types of functors:
+
+1. *Covariant Functors* - Preserve the direction of morphisms
+2. *Contravariant Functors* - Reverse the direction of morphisms
+
+#+begin_src mermaid :file ../images/diagrams/contravariant.mmd
+graph TB
+    subgraph "Covariant Functor"
+    A1((A)) --> |f| B1((B))
+    FA1((F(A))) --> |F(f)| FB1((F(B)))
+    A1 -.-> |F| FA1
+    B1 -.-> |F| FB1
+    end
+    
+    subgraph "Contravariant Functor"
+    A2((A)) --> |f| B2((B))
+    FB2((G(B))) --> |G(f)| FA2((G(A)))
+    A2 -.-> |G| FA2
+    B2 -.-> |G| FB2
+    end
+#+end_src
+
+** Endofunctors
+
+An endofunctor is a functor from a category to itself. These are particularly important as they form the basis for monads, which we'll explore in a later notebook.
+
+#+begin_src mermaid :file ../images/diagrams/endofunctor.mmd
+graph LR
+    subgraph "Category C"
+    A((A)) --> |f| B((B))
+    A -.-> |F| FA((F(A)))
+    B -.-> |F| FB((F(B)))
+    FA --> |F(f)| FB
+    end
+    
+    style FA fill:#bbf,stroke:#333,stroke-width:2px
+    style FB fill:#bbf,stroke:#333,stroke-width:2px
+#+end_src
+
+* Natural Transformations
+
+Natural transformations are mappings between functors. If F and G are functors from category C to category D, a natural transformation η: F ⇒ G assigns to each object X in C a morphism η_X: F(X) → G(X) in D such that for any morphism f: X → Y in C, the following diagram commutes:
+
+F(X) ---F(f)--→ F(Y)
+ |              |
+η_X             η_Y
+ |              |
+G(X) ---G(f)--→ G(Y)
+
+** Implementing a Simple Natural Transformation
+
+Let's define two functors and a natural transformation between them:
+
+#+begin_src scheme
+;; Define a second functor G from C to D
+(define (functor-g-obj obj)
+  (cond ((equal? obj c-obj1) d-obj1)
+        ((equal? obj c-obj2) d-obj2)
+        (else (error "Object not in source category"))))
+
+(define (functor-g-mor mor)
+  (let ((name (cadr mor))
+        (domain (caddr mor))
+        (codomain (cadddr mor)))
+    (cond ((equal? name "f") d-mor)
+          ((equal? name "id_C1") d-id1)
+          ((equal? name "id_C2") d-id2)
+          (else (error "Morphism not in source category")))))
+
+;; Define a natural transformation η from F to G
+;; For each object X in C, we need a morphism η_X: F(X) → G(X)
+;; Since our functors are identical for this example, η_X will be identity morphisms
+(define (eta obj)
+  (let ((f-obj (functor-obj obj))
+        (g-obj (functor-g-obj obj)))
+    (identity f-obj)))
+
+;; Let's verify the naturality condition for morphism f: C1 → C2
+(display "Natural transformation components:\n")
+(display "η_C1: F(C1) → G(C1): ") (display (eta c-obj1)) (newline)
+(display "η_C2: F(C2) → G(C2): ") (display (eta c-obj2)) (newline)
+#+end_src
+
+** Visualizing a Natural Transformation
+
+Let's visualize our natural transformation:
+
+#+begin_src mermaid :file ../images/diagrams/natural-trans.mmd
+graph TD
+    FC1((F(C1))) --> |F(f)| FC2((F(C2)))
+    GC1((G(C1))) --> |G(f)| GC2((G(C2)))
+    FC1 --> |η_C1| GC1
+    FC2 --> |η_C2| GC2
+    
+    style FC1 fill:#bbf,stroke:#333,stroke-width:2px
+    style FC2 fill:#bbf,stroke:#333,stroke-width:2px
+    style GC1 fill:#fbb,stroke:#333,stroke-width:2px
+    style GC2 fill:#fbb,stroke:#333,stroke-width:2px
+#+end_src
+
+* Connection to Self-Reference and Strange Loops
+
+** Functors and Self-Reference
+
+Functors can create interesting self-referential structures when they map a category into itself (endofunctors).
+
+One classic example is the fixed-point combinator in programming, which creates a form of self-reference:
+
+#+begin_src scheme
+;; Y combinator (fixed-point combinator)
+(define (Y f)
+  ((lambda (x) (f (lambda (y) ((x x) y))))
+   (lambda (x) (f (lambda (y) ((x x) y))))))
+
+;; Using the Y combinator to create a factorial function
+(define factorial
+  (Y (lambda (f)
+       (lambda (n)
+         (if (zero? n)
+             1
+             (* n (f (- n 1))))))))
+
+;; Test it
+(display "Factorial of 5: ")
+(display (factorial 5))
+(newline)
+#+end_src
+
+** Natural Transformations and Strange Loops
+
+Natural transformations can form strange loops when composed in certain ways. For example, if we have natural transformations α: F ⇒ G and β: G ⇒ F, we can compose them to get a "loop" that takes us from F back to F.
+
+#+begin_src mermaid :file ../images/diagrams/nt-strange-loop.mmd
+graph TB
+    F((F)) --> |α| G((G))
+    G --> |β| F
+    
+    style F fill:#bbf,stroke:#333,stroke-width:2px
+    style G fill:#fbb,stroke:#333,stroke-width:2px
+#+end_src
+
+This is reminiscent of the "tangled hierarchies" described in Gödel, Escher, Bach, where levels of a system interpenetrate in surprising ways.
+
+* The Yoneda Lemma (Preview)
+
+The Yoneda Lemma is a profound result in category theory that deals with functors and natural transformations. It states that for any object A in a locally small category C, the natural transformations from the representable functor Hom(A, -) to any functor F are in one-to-one correspondence with the elements of F(A).
+
+This creates a deep connection between an object and the ways it can be "viewed" through morphisms - a form of categorical introspection that has connections to self-reference.
+
+We'll explore this further in a dedicated notebook on the Yoneda Lemma.
+
+#+begin_src mermaid :file ../images/diagrams/yoneda-preview.mmd
+graph LR
+    A((A)) --> |f| B((B))
+    B --> |"Hom(A,-)"| HomAB(("Hom(A,B)"))
+    A --> |"Hom(A,-)"| HomAA(("Hom(A,A)"))
+    
+    HomAA --> |"Hom(A,f)"| HomAB
+    
+    style HomAA fill:#bbf,stroke:#333,stroke-width:2px
+    style HomAB fill:#bbf,stroke:#333,stroke-width:2px
+#+end_src
+
+* Exercises
+
+1. Implement a contravariant functor and verify that it reverses the direction of morphisms.
+
+2. Create a pair of functors F, G from a category C to D and define natural transformations α: F ⇒ G and β: G ⇒ F.
+
+3. Find examples of functors and natural transformations in everyday computing:
+   - How does a database mapping relate to a functor?
+   - How might different programming languages represent the same algorithm (a natural transformation)?
+
+4. Think about how the Y combinator relates to the concept of a "strange loop" and how this might be formalized in categorical terms.

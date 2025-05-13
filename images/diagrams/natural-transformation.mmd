@@ -1,0 +1,16 @@
+graph TB
+    subgraph "Category C"
+    X((X)) --> |f| Y((Y))
+    end
+    
+    subgraph "Category D"
+    FX((F(X))) --> |F(f)| FY((F(Y)))
+    GX((G(X))) --> |G(f)| GY((G(Y)))
+    FX --> |"α_X"| GX
+    FY --> |"α_Y"| GY
+    end
+    
+    X -.-> FX
+    X -.-> GX
+    Y -.-> FY
+    Y -.-> GY
