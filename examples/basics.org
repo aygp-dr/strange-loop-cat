@@ -2,11 +2,14 @@
 #+AUTHOR: Aidan Pace
 #+EMAIL: apace@defrecord.com
 #+DATE: 2025-05-11
-#+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes
-#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes
+#+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes :tangle yes
+#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes :tangle yes
 #+PROPERTY: header-args:mermaid :file ../images/diagrams/:results file :exports both
 #+OPTIONS: toc:3 num:3 
 #+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+
+# Tangle destination for Scheme code
+#+PROPERTY: tangle-dir "../src/generated/"
 
 * Categories: The Basic Structure
 
@@ -22,7 +25,8 @@ Let's explore these concepts interactively using Guile Scheme.
 
 First, let's load our category theory module:
 
-#+begin_src scheme
+#+NAME: module-loading
+#+begin_src scheme :tangle "../src/generated/basics-module.scm"
 (add-to-load-path "../src/guile")
 (use-modules (category))
 
@@ -38,11 +42,21 @@ First, let's load our category theory module:
 
 Let's create a simple category with three objects and some morphisms:
 
-#+begin_src scheme
+#+NAME: objects-def
+#+begin_src scheme :tangle "../src/generated/basics-category.scm"
 ;; Create objects
 (define a (make-object "A"))
 (define b (make-object "B"))
 (define c (make-object "C"))
+#+end_src
+
+#+NAME: morphisms-def
+#+begin_src scheme :tangle "../src/generated/basics-category.scm" :noweb yes
+;; First include the module loading code
+<<module-loading>>
+
+;; Then include object definitions
+<<objects-def>>
 
 ;; Create morphisms
 (define f (make-morphism "f" a b))
@@ -63,7 +77,16 @@ Let's create a simple category with three objects and some morphisms:
 
 One of the key operations in a category is composition of morphisms:
 
-#+begin_src scheme
+#+NAME: composition
+#+begin_src scheme :tangle "../src/generated/basics-composition.scm" :noweb yes
+;; First include all the necessary definitions
+<<module-loading>>
+<<objects-def>>
+
+;; Create morphisms needed for composition
+(define f (make-morphism "f" a b))
+(define g (make-morphism "g" b c))
+
 ;; Compose morphisms g and f
 (define g-after-f (compose f g))
 
@@ -236,6 +259,75 @@ graph TD
     style C fill:#f99,stroke:#333,stroke-width:2px
 #+end_src
 
+* Complete Example
+
+Let's put everything together in a complete example that demonstrates tangling:
+
+#+NAME: complete-category-example
+#+begin_src scheme :tangle "../src/generated/complete-basics.scm" :noweb yes
+;; First include the module loading code
+<<module-loading>>
+
+;; Define objects
+<<objects-def>>
+
+;; Create morphisms
+(define f (make-morphism "f" a b))
+(define g (make-morphism "g" b c))
+
+;; Create identity morphisms
+(define id-a (identity a))
+(define id-b (identity b))
+(define id-c (identity c))
+
+;; Create composition
+(define g-after-f (compose f g))
+
+;; Extra objects for isomorphism example
+(define x (make-object "X"))
+(define y (make-object "Y"))
+(define f-xy (make-morphism "f" x y))
+(define g-yx (make-morphism "g" y x))
+(define f-after-g (compose g-yx f-xy))
+(define g-after-f (compose f-xy g-yx))
+
+;; Display results
+(display "=== CATEGORY THEORY BASICS ===\n\n")
+
+(display "OBJECTS:\n")
+(display a) (newline)
+(display b) (newline)
+(display c) (newline)
+(display x) (newline)
+(display y) (newline)
+
+(display "\nMORPHISMS:\n")
+(display f) (newline)
+(display g) (newline)
+(display f-xy) (newline)
+(display g-yx) (newline)
+
+(display "\nIDENTITY MORPHISMS:\n")
+(display id-a) (newline)
+(display id-b) (newline)
+(display id-c) (newline)
+
+(display "\nCOMPOSITIONS:\n")
+(display "g ∘ f: ") (display g-after-f) (newline)
+(display "f ∘ g: ") (display f-after-g) (newline)
+(display "g-yx ∘ f-xy: ") (display f-after-g) (newline)
+(display "f-xy ∘ g-yx: ") (display g-after-f) (newline)
+
+;; Create a category
+(define simple-cat 
+  (make-category "SimpleCategory" 
+                 (list a b c) 
+                 (list f g id-a id-b id-c g-after-f)))
+
+(display "\nCATEGORY:\n")
+(display simple-cat) (newline)
+#+end_src
+
 * Exercises
 
 1. Create a category with four objects and morphisms that form a "square" with compositions along the diagonals.
@@ -245,3 +337,22 @@ graph TD
 3. Find an example of a strange loop in everyday life and try to model it using categorical concepts.
 
 4. Think about how self-reference in programming (recursive functions) relates to categorical concepts.
+
+* Tangling Instructions
+
+To tangle this org file and generate the Scheme source files:
+
+1. In Emacs, open this file
+2. Use the command: M-x org-babel-tangle
+3. Generated files will be created in the ../src/generated/ directory:
+   - basics-module.scm
+   - basics-category.scm  
+   - basics-composition.scm
+   - complete-basics.scm
+
+To run any of the generated files:
+
+```shell
+cd ../src/generated
+guile complete-basics.scm
+```
