@@ -1,0 +1,57 @@
+# Node.js dependencies
+node_modules/
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.env.*
+!.env.sample
+.venv/
+env/
+venv/
+ENV/
+.uv/
+*.egg-info/
+dist/
+build/
+requirements.txt.bak
+
+# Generated files
+*.png
+*.html
+build/
+
+# Editor files
+*~
+.DS_Store
+.vscode/
+.idea/
+.emacs.desktop
+.emacs.desktop.lock
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Secrets and credentials
+**/.claude/settings.local.json
+**/secrets/
+**/*_key
+**/*_secret
+**/*.pem
+**/*.key
+**/*.crt
+**/*.env
+**/credentials.*
+**/*config*.json
+!example.config.json
+!default.config.json
+
+# Temporary files
+**/.tmp/
+**/temp/

@@ -1,0 +1,77 @@
+#+TITLE: Strange Loop Cat: Category Theory Explorer
+#+AUTHOR: 
+#+EMAIL: 
+#+DATE: 2025-05-11
+#+OPTIONS: toc:3 num:3 
+#+PROPERTY: header-args:scheme :results output :exports both :eval yes
+#+PROPERTY: header-args:guile :results output :exports both :eval yes
+#+PROPERTY: header-args:mermaid :file images/diagrams/:results file :exports both
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+
+* Strange Loop Cat
+
+This repository explores the beautiful connections between category theory, self-reference, and formal systems. Drawing inspiration from Douglas Hofstadter's "Gödel, Escher, Bach", it provides interactive explorations of categorical concepts with a focus on strange loops and recursive structures.
+
+** Overview
+
+Category theory offers a powerful mathematical framework for studying abstract structures and their relationships, while also providing insights into self-reference and strange loops. This project:
+
+- Visualizes categorical concepts through interactive diagrams
+- Implements categorical structures in Guile Scheme
+- Explores the connections between formal systems, self-reference, and category theory
+- Provides hands-on examples to build intuition for abstract concepts
+
+** Quick Start
+
+1. Clone this repository
+2. Ensure you have the required dependencies:
+   - GNU Emacs 30+
+   - GNU Make
+   - Guile Scheme 3.0+
+   - Node.js (for Mermaid diagrams)
+   - Python 3.9+ (for LLM utilities)
+
+3. Install local dependencies:
+   #+begin_src shell
+   # Install Node.js dependencies
+   npm install
+   
+   # Install Python dependencies with uv
+   uv venv
+   source .venv/bin/activate  # On Unix/macOS
+   # or .venv\Scripts\activate on Windows
+   uv pip install -r requirements.txt
+   #+end_src
+
+4. Generate the diagrams:
+   #+begin_src shell
+   make mermaid
+   # Or use the npm script
+   npm run generate-diagrams
+   #+end_src
+
+5. Open any of the interactive notebooks in Emacs with org-mode
+
+** Interactive Notebooks
+
+This repository contains several interactive org-mode notebooks that you can use to explore category theory concepts:
+
+- [[file:examples/basics.org][Basics of Categories and Morphisms]]
+- [[file:examples/functors.org][Functors and Natural Transformations]]  
+- [[file:examples/yoneda.org][The Yoneda Lemma]]
+- [[file:examples/monads.org][Monads and Computational Effects]]
+- [[file:examples/strange-loops.org][Strange Loops and Self-Reference]]
+
+Each notebook contains executable code blocks that demonstrate the concepts discussed.
+
+** Resources
+
+- [[https://ncatlab.org/nlab/show/category+theory][nLab: Category Theory]]
+- [[https://en.wikipedia.org/wiki/Category_theory][Wikipedia: Category Theory]]
+- [[https://arxiv.org/abs/1803.05316][Seven Sketches in Compositionality]] by Brendan Fong and David Spivak
+- [[https://math.ucr.edu/home/baez/categories.html][John Baez: Categories, Quantization, and Much More]]
+- Douglas Hofstadter's "Gödel, Escher, Bach: An Eternal Golden Braid"
+
+** License
+
+[Your preferred license]
