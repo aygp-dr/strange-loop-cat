@@ -30,33 +30,41 @@ def generate_category_description(name: str, objects: List[str], morphisms: Dict
     Returns:
         A natural language description of the category
     """
-    models = llm.get_models()
-    available_models = list(models.keys())
-    
-    if not available_models:
-        return f"No LLM models available. Please install and configure llm package."
-        
-    # Build prompt
-    prompt = f"""
-    Describe the category '{name}' with:
-    
-    Objects: {', '.join(objects)}
-    
-    Morphisms:
-    """
-    
-    for morph_name, (domain, codomain) in morphisms.items():
-        prompt += f"- {morph_name}: {domain} → {codomain}\n"
-    
-    prompt += "\nDescribe this category's structure, any special properties, and relationships in formal category theory terms."
-    
     try:
-        # Use the first available model
-        model = models[available_models[0]]
-        response = model.prompt(prompt)
-        return response.text()
-    except Exception as e:
-        return f"Error generating description: {str(e)}"
+        models = llm.get_models()
+        
+        # Check if models is a dictionary (normal case) or list (error case)
+        if isinstance(models, dict):
+            available_models = list(models.keys())
+        else:
+            return f"No LLM models available. Please install and configure llm package."
+        
+        if not available_models:
+            return f"No LLM models available. Please install and configure llm package."
+            
+        # Build prompt
+        prompt = f"""
+        Describe the category '{name}' with:
+        
+        Objects: {', '.join(objects)}
+        
+        Morphisms:
+        """
+        
+        for morph_name, (domain, codomain) in morphisms.items():
+            prompt += f"- {morph_name}: {domain} → {codomain}\n"
+        
+        prompt += "\nDescribe this category's structure, any special properties, and relationships in formal category theory terms."
+        
+        try:
+            # Use the first available model
+            model = models[available_models[0]]
+            response = model.prompt(prompt)
+            return response.text()
+        except Exception as e:
+            return f"Error generating description: {str(e)}"
+    except (AttributeError, ImportError, Exception) as e:
+        return f"LLM functionality not available: {str(e)}"
 
 
 def convert_org_to_prompt(file_path: str) -> str:
