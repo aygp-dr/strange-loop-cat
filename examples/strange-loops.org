@@ -1,6 +1,6 @@
 #+TITLE: Strange Loops and Self-Reference
-#+AUTHOR: Aidan Pace
-#+EMAIL: apace@defrecord.com
+#+AUTHOR: Jason Walsh
+#+EMAIL: j@wal.sh
 #+DATE: 2025-05-11
 #+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes
 #+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes

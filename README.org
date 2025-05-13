@@ -1,10 +1,10 @@
 #+TITLE: Strange Loop Cat: Category Theory Explorer
-#+AUTHOR: 
-#+EMAIL: 
-#+DATE: 2025-05-11
+#+AUTHOR: Jason Walsh
+#+EMAIL: j@wal.sh
+#+DATE: 2025-05-12
 #+OPTIONS: toc:3 num:3 
 #+PROPERTY: header-args:scheme :results output :exports both :eval yes
-#+PROPERTY: header-args:guile :results output :exports both :eval yes
+#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes
 #+PROPERTY: header-args:mermaid :file images/diagrams/:results file :exports both
 #+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
@@ -72,6 +72,49 @@ Each notebook contains executable code blocks that demonstrate the concepts disc
 - [[https://math.ucr.edu/home/baez/categories.html][John Baez: Categories, Quantization, and Much More]]
 - Douglas Hofstadter's "Gödel, Escher, Bach: An Eternal Golden Braid"
 
+** GEB Connection and Self-Reference
+
+This project draws heavily from Douglas Hofstadter's seminal work "Gödel, Escher, Bach: An Eternal Golden Braid" (GEB). The concept of strange loops—processes that move through hierarchical levels and eventually return to their starting point—is central to both GEB and this project.
+
+Some key connections explored in this repository:
+
+- Category theory provides a formal framework for understanding self-reference
+- Yoneda lemma as a category-theoretic form of "introspection"
+- Fixed point operators and their relation to strange loops
+- Tangled hierarchies in category theory
+- Recursive structures and their categorical formalization
+
+** Emacs Integration
+
+This project is designed to be used with Emacs and org-mode:
+
+- All examples are provided as literate org files
+- Code blocks can be executed directly within Emacs
+- Diagrams are generated using Mermaid integration
+- noweb references allow for building complex examples incrementally
+- Babel execution environment is pre-configured
+
+** Python Utilities
+
+The Python utilities in this project provide:
+
+- Category theory structure extraction from org files
+- Visual representation generation
+- Integration with LLMs for exploring categorical concepts
+- Tools for analyzing and exploring strange loops programmatically
+
 ** License
 
-[Your preferred license]
+MIT License
+
+Copyright (c) 2025 Jason Walsh
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
