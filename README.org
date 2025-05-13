@@ -54,15 +54,15 @@ Category theory offers a powerful mathematical framework for studying abstract s
 
 ** Interactive Notebooks
 
-This repository contains several interactive org-mode notebooks that you can use to explore category theory concepts:
+This repository contains five interactive org-mode notebooks that you can use to explore category theory concepts:
 
-- [[file:examples/basics.org][Basics of Categories and Morphisms]]
-- [[file:examples/functors.org][Functors and Natural Transformations]]  
-- [[file:examples/yoneda.org][The Yoneda Lemma]]
-- [[file:examples/monads.org][Monads and Computational Effects]]
-- [[file:examples/strange-loops.org][Strange Loops and Self-Reference]]
+- [[file:examples/basics.org][Basics of Categories and Morphisms]] - Introduction to the fundamental concepts of categories, objects, morphisms, and composition
+- [[file:examples/functors.org][Functors and Natural Transformations]] - Structure-preserving maps between categories and transformations between functors
+- [[file:examples/yoneda.org][The Yoneda Lemma]] - An exploration of one of the most profound and fundamental results in category theory
+- [[file:examples/monads.org][Monads and Computational Effects]] - Understanding monads as a powerful abstraction for managing computational effects
+- [[file:examples/strange-loops.org][Strange Loops and Self-Reference]] - Examining self-reference, recursion, and tangled hierarchies with connection to Hofstadter's work
 
-Each notebook contains executable code blocks that demonstrate the concepts discussed.
+Each notebook contains executable code blocks that demonstrate the concepts discussed and can be tangled to generate standalone Scheme files.
 
 ** Resources
 
