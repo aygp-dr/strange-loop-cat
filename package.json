@@ -1,0 +1,30 @@
+{
+  "name": "strange-loop-cat",
+  "version": "1.0.0",
+  "description": "Category Theory Explorer with a focus on Strange Loops",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "guile -L src/guile -c \"(use-modules (test-runner)) (run-all-tests)\"",
+    "generate-diagrams": "npx @mermaid-js/mermaid-cli -i images/diagrams/*.mmd -o images/diagrams/",
+    "python-setup": "uv venv && source .venv/bin/activate && uv pip install -r requirements.txt",
+    "python-analyze": "source .venv/bin/activate && PYTHONPATH=$(pwd) python3 src/python/analyze_category.py",
+    "python-test": "source .venv/bin/activate && PYTHONPATH=$(pwd) python3 -m src.python.files_processor && python3 -m src.python.llm_utils"
+  },
+  "keywords": [
+    "category-theory",
+    "strange-loops",
+    "guile",
+    "scheme",
+    "mathematics",
+    "llm",
+    "ai"
+  ],
+  "author": "Aidan Pace <apace@defrecord.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^11.4.2"
+  }
+}
