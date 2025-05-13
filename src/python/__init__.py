@@ -1,1 +1,0 @@
-# Category Theory Explorer Python Module
