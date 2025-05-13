@@ -24,33 +24,32 @@ Category theory offers a powerful mathematical framework for studying abstract s
 ** Quick Start
 
 1. Clone this repository
-2. Ensure you have the required dependencies:
-   - GNU Emacs 30+
-   - GNU Make
-   - Guile Scheme 3.0+
-   - Node.js (for Mermaid diagrams)
-   - Python 3.9+ (for LLM utilities)
-
-3. Install local dependencies:
+2. Set up the environment (recommended to use [[https://direnv.net/][direnv]]):
    #+begin_src shell
-   # Install Node.js dependencies
-   npm install
+   # If you have direnv installed
+   direnv allow .
    
-   # Install Python dependencies with uv
-   uv venv
-   source .venv/bin/activate  # On Unix/macOS
-   # or .venv\Scripts\activate on Windows
-   uv pip install -r requirements.txt
+   # Without direnv, source the environment file manually
+   source .envrc
+   #+end_src
+
+3. Run the project initialization (one-time setup):
+   #+begin_src shell
+   make init
    #+end_src
 
 4. Generate the diagrams:
    #+begin_src shell
    make mermaid
-   # Or use the npm script
-   npm run generate-diagrams
    #+end_src
 
 5. Open any of the interactive notebooks in Emacs with org-mode
+   #+begin_src shell
+   # Open the basics notebook with Emacs
+   emacs examples/basics.org
+   
+   # Or use your favorite org-mode enabled editor
+   #+end_src
 
 ** Interactive Notebooks
 
@@ -71,6 +70,21 @@ Each notebook contains executable code blocks that demonstrate the concepts disc
 - [[https://arxiv.org/abs/1803.05316][Seven Sketches in Compositionality]] by Brendan Fong and David Spivak
 - [[https://math.ucr.edu/home/baez/categories.html][John Baez: Categories, Quantization, and Much More]]
 - Douglas Hofstadter's "Gödel, Escher, Bach: An Eternal Golden Braid"
+
+** Available Commands
+
+This project uses Make for most operations. Here are the available commands:
+
+| Command       | Description                                         |
+|--------------+-----------------------------------------------------|
+| ~make init~    | Initialize the project, creating directories and    |
+|              | installing dependencies                              |
+| ~make mermaid~ | Generate diagrams from Mermaid definitions          |
+| ~make tangle~  | Generate Scheme source files from org file blocks   |
+| ~make test~    | Run tests for the category theory implementation    |
+| ~make docs~    | Generate HTML documentation from org files          |
+| ~make clean~   | Remove generated files                              |
+| ~make all~     | Generate diagrams and documentation                 |
 
 ** GEB Connection and Self-Reference
 

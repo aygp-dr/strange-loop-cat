@@ -1,13 +1,20 @@
-.PHONY: all clean mermaid docs test scheme-test python-test venv python-install
+.PHONY: all init clean mermaid docs test scheme-test tangle
 
 # Default target
 all: mermaid docs
+
+# Project initialization
+init: images/diagrams build src/generated
+	npm install
 
 # Create output directories as needed
 build:
 	mkdir -p $@
 
 images/diagrams:
+	mkdir -p $@
+	
+src/generated:
 	mkdir -p $@
 
 # Variables
@@ -16,8 +23,6 @@ EMACS = emacs
 MERMAID_CLI = npx @mermaid-js/mermaid-cli
 MERMAID_FILES = $(wildcard images/diagrams/*.mmd)
 MERMAID_PNGS = $(patsubst %.mmd,%.png,$(MERMAID_FILES))
-PYTHON = python3
-UV = uv
 
 # Generate Mermaid diagrams
 mermaid: images/diagrams $(MERMAID_PNGS)
@@ -43,25 +48,15 @@ clean:
 	rm -f *.html
 	rm -f images/diagrams/*.png
 	rm -rf build/*
-	rm -rf __pycache__/
-	rm -rf src/python/__pycache__/
+	rm -rf src/generated/*
 
 # Run tests
-test: scheme-test python-test
+test: scheme-test
 
 # Run Scheme tests
 scheme-test:
 	$(GUILE) -L src/guile -c "(use-modules (test-runner)) (run-all-tests)"
 
-# Create Python virtual environment
-venv:
-	$(UV) venv
-
-# Install Python dependencies
-python-install:
-	$(UV) pip install -r requirements.txt
-
-# Run Python tests
-python-test: build
-	PYTHONPATH=$(PWD) $(PYTHON) -m src.python.files_processor
-	PYTHONPATH=$(PWD) $(PYTHON) -m src.python.llm_utils
+# Tangle org files into Scheme files
+tangle: build
+	$(EMACS) --batch -l tangle-babel.el
