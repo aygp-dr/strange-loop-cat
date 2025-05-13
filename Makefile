@@ -1,12 +1,14 @@
-mkdir -p images/diagrams
-mkdir -p src/guile
-mkdir -p src/python
-mkdir -p build
-
-.PHONY: all clean mermaid docs test venv python-install python-test
+.PHONY: all clean mermaid docs test scheme-test python-test venv python-install
 
 # Default target
 all: mermaid docs
+
+# Create output directories as needed
+build:
+	mkdir -p $@
+
+images/diagrams:
+	mkdir -p $@
 
 # Variables
 GUILE = guile
@@ -18,7 +20,7 @@ PYTHON = python3
 UV = uv
 
 # Generate Mermaid diagrams
-mermaid: $(MERMAID_PNGS)
+mermaid: images/diagrams $(MERMAID_PNGS)
 
 %.png: %.mmd
 	$(MERMAID_CLI) -i $< -o $@
@@ -60,6 +62,6 @@ python-install:
 	$(UV) pip install -r requirements.txt
 
 # Run Python tests
-python-test:
+python-test: build
 	PYTHONPATH=$(PWD) $(PYTHON) -m src.python.files_processor
 	PYTHONPATH=$(PWD) $(PYTHON) -m src.python.llm_utils
