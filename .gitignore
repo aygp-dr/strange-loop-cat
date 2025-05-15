@@ -31,6 +31,13 @@ build/
 .idea/
 .emacs.desktop
 .emacs.desktop.lock
+\#*\#
+.\#*
+*.swp
+*.swo
+
+# Implementation tracking
+issues/
 
 # Log files
 *.log
