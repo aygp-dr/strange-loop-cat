@@ -1,4 +1,4 @@
-.PHONY: all init clean mermaid docs test scheme-test tangle tangle-file md2org md2org-file
+.PHONY: all init clean mermaid docs test scheme-test tangle tangle-file detangle detangle-file org-lint org-lint-file md2org md2org-file
 
 # Default target
 all: mermaid docs
@@ -89,4 +89,34 @@ md2org-file:
 		else \
 			python3 scripts/md2org.py "$(FILE)" -o "$(OUTPUT)"; \
 		fi; \
+	fi
+
+# Detangle org files (update code blocks from tangled files)
+detangle:
+	@echo "Detangling org files..."
+	$(EMACS) --batch -l scripts/tangle-config.el -l tangle-babel.el --eval "(detangle-files '($(foreach file,$(wildcard examples/*.org),\"$(file)\" )))"
+	@echo "Detangling guide files..."
+	$(EMACS) --batch -l scripts/tangle-config.el --eval "(detangle-files '($(foreach file,$(GUIDE_FILES),\"$(file)\" )))"
+
+# Detangle a specific org file
+detangle-file:
+	@if [ -z "$(FILE)" ]; then \
+		echo "Usage: make detangle-file FILE=examples/filename.org"; \
+	else \
+		$(EMACS) --batch -l scripts/tangle-config.el --eval '(detangle-file "$(FILE)")'; \
+	fi
+
+# Run org-lint on all org files
+org-lint:
+	@echo "Running org-lint on org files..."
+	$(EMACS) --batch -l scripts/tangle-config.el --eval "(lint-files '($(foreach file,$(wildcard examples/*.org),\"$(file)\" )))"
+	@echo "Running org-lint on guide files..."
+	$(EMACS) --batch -l scripts/tangle-config.el --eval "(lint-files '($(foreach file,$(GUIDE_FILES),\"$(file)\" )))"
+
+# Run org-lint on a specific org file
+org-lint-file:
+	@if [ -z "$(FILE)" ]; then \
+		echo "Usage: make org-lint-file FILE=examples/filename.org"; \
+	else \
+		$(EMACS) --batch -l scripts/tangle-config.el --eval '(lint-file "$(FILE)")'; \
 	fi

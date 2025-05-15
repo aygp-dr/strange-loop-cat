@@ -95,8 +95,12 @@ This project uses Make to simplify working with the code and documentation. Here
 | ~make init~           | Set up the project (run this first!)                 |
 | ~make tangle~         | Generate all Scheme source files from org notebooks  |
 | ~make tangle-file FILE=path~ | Generate code from a specific org notebook    |
+| ~make detangle~       | Update code blocks from their tangled source files   |
+| ~make detangle-file FILE=path~ | Detangle a specific org file                |
 | ~make mermaid~        | Generate diagrams from Mermaid definitions           |
 | ~make test~           | Run tests for the category theory implementation     |
+| ~make org-lint~       | Run org-lint on all org files to check for issues    |
+| ~make org-lint-file FILE=path~ | Run org-lint on a specific org file         |
 | ~make md2org~         | Convert all Markdown guides to Org Mode format       |
 | ~make md2org-file FILE=path~ | Convert a specific Markdown file to Org Mode  |
 | ~make clean~          | Remove generated files and start fresh               |
