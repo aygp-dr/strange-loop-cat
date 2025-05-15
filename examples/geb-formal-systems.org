@@ -1,0 +1,92 @@
+#+TITLE: Formal Systems from Gödel, Escher, Bach
+#+AUTHOR: Jason Walsh
+#+EMAIL: jwalsh@defrecord.com
+#+DATE: 2025-05-15
+#+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes :tangle yes
+#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes :tangle yes
+#+PROPERTY: header-args:mermaid :file ../images/diagrams/:results file :exports both
+#+OPTIONS: toc:3 num:3 
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+
+# Tangle destination for Scheme code
+#+PROPERTY: tangle-dir "../src/generated/"
+
+* Introduction
+
+This file contains implementations of formal systems and concepts from Douglas Hofstadter's
+"Gödel, Escher, Bach: An Eternal Golden Braid" (GEB). The implementations serve as 
+concrete examples of the abstract concepts discussed in the book and provide a computational
+perspective on self-reference, strange loops, and formal systems.
+
+** Loading Required Modules
+
+#+NAME: module-loading
+#+begin_src guile :tangle ../src/generated/geb-systems.scm :mkdirp yes
+(use-modules (ice-9 format)
+             (srfi srfi-1)
+             (srfi srfi-9)
+             (srfi srfi-43)
+             (ice-9 match)
+             (ice-9 pretty-print))
+
+(display "Modules loaded successfully.\n")
+#+end_src
+
+* The MIU Formal System
+
+The MIU system from Chapter I is a formal system with strings built from the symbols M, I, and U,
+starting with the axiom MI. It has four rules of inference:
+
+1. If you have a string ending with I, you can add U (xI → xIU)
+2. If you have a string starting with M, you can double everything after M (Mx → Mxx)
+3. If you have III in your string, you can replace it with U (xIIIy → xUy)
+4. If you have UU in your string, you can remove it (xUUy → xy)
+
+The question posed by Hofstadter: Can you derive MU from MI using these rules?
+
+[MIU System implementation...]
+
+* Typographical Number Theory (TNT)
+
+TNT is a formal system for expressing elementary number theory, introduced in GEB to demonstrate
+Gödel's Incompleteness Theorem. It includes variables, constants, operators, and logical symbols.
+
+[TNT implementation...]
+
+* Self-Reference and Gödel Numbering
+
+Gödel's breakthrough was encoding statements about formal systems within the systems themselves.
+This section implements Gödel numbering and demonstrates how a system can talk about itself.
+
+[Gödel numbering implementation...]
+
+* Hofstadter's Sequences
+
+GEB introduces several self-referential sequences that exhibit fascinating properties:
+
+** The Q-Sequence
+** The G-Sequence
+** The H-Sequence
+
+[Implementations of these sequences...]
+
+* Dialogues and Meta-Structures
+
+GEB's dialogues between Achilles and the Tortoise illustrate many concepts through conversation.
+Here we implement a meta-structure for creating GEB-style dialogues.
+
+[Dialogue structure implementation...]
+
+* Canons and Transformations
+
+Bach's music demonstrates transformations that create self-reference and strange loops.
+This section implements musical transformations mentioned in GEB.
+
+[Musical transformation implementation...]
+
+* Exercises
+
+1. Extend the MIU system with a new rule and explore its implications.
+2. Create a TNT proof of a simple theorem.
+3. Implement one of the paradoxes discussed in GEB (e.g., the Epimenides paradox).
+4. Design your own formal system inspired by GEB.
