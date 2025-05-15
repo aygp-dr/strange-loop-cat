@@ -1,0 +1,14 @@
+graph TB
+    subgraph "Covariant Functor"
+    A1((A)) --> |f| B1((B))
+    FA1((F(A))) --> |F(f)| FB1((F(B)))
+    A1 -.-> |F| FA1
+    B1 -.-> |F| FB1
+    end
+    
+    subgraph "Contravariant Functor"
+    A2((A)) --> |f| B2((B))
+    FB2((G(B))) --> |G(f)| FA2((G(A)))
+    A2 -.-> |G| FA2
+    B2 -.-> |G| FB2
+    end

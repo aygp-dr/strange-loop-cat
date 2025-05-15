@@ -1,0 +1,111 @@
+* Exercises
+
+1. [Exercise description 1]
+
+2. [Exercise description 2]
+
+3. [Exercise description 3]
+
+4. [Exercise description 4]
+
+* Exercise Workspace
+
+This section provides a dedicated space to work on the exercises. You can modify the code blocks below, execute them in Emacs, and when you're satisfied with your solutions, you can tangle them back to the appropriate files.
+
+** Exercise 1 Workspace
+
+#+NAME: exercise1-solution
+#+begin_src scheme :tangle "../src/generated/solutions/exercise1-solution.scm" :mkdirp yes
+;; Your solution to Exercise 1 goes here
+;; You can run this code block directly in Emacs with C-c C-c
+
+;; Example:
+(display "Exercise 1 solution")
+(newline)
+#+end_src
+
+** Exercise 2 Workspace
+
+#+NAME: exercise2-solution
+#+begin_src scheme :tangle "../src/generated/solutions/exercise2-solution.scm" :mkdirp yes
+;; Your solution to Exercise 2 goes here
+;; You can run this code block directly in Emacs with C-c C-c
+
+;; Example:
+(display "Exercise 2 solution")
+(newline)
+#+end_src
+
+** Exercise 3 Workspace
+
+#+NAME: exercise3-solution
+#+begin_src scheme :tangle "../src/generated/solutions/exercise3-solution.scm" :mkdirp yes
+;; Your solution to Exercise 3 goes here
+;; You can run this code block directly in Emacs with C-c C-c
+
+;; Example:
+(display "Exercise 3 solution")
+(newline)
+#+end_src
+
+** Exercise 4 Workspace
+
+#+NAME: exercise4-solution
+#+begin_src scheme :tangle "../src/generated/solutions/exercise4-solution.scm" :mkdirp yes
+;; Your solution to Exercise 4 goes here
+;; You can run this code block directly in Emacs with C-c C-c
+
+;; Example:
+(display "Exercise 4 solution")
+(newline)
+#+end_src
+
+** Testing Your Solutions
+
+#+NAME: test-solutions
+#+begin_src scheme :tangle "../src/generated/solutions/test-solutions.scm" :mkdirp yes
+;; Load your solution files
+(load "exercise1-solution.scm")
+(load "exercise2-solution.scm")
+(load "exercise3-solution.scm") 
+(load "exercise4-solution.scm")
+
+;; Add your own tests here
+(display "Running tests for all exercises...")
+(newline)
+
+;; Example test function
+(define (run-tests)
+  (display "All tests passed!")
+  (newline))
+
+(run-tests)
+#+end_src
+
+* Appendix: Solutions
+
+This section can be used to provide official solutions to the exercises, possibly hidden initially to encourage independent work.
+
+#+NAME: official-solution1
+#+begin_src scheme :tangle "../src/generated/solutions/official-solution1.scm" :mkdirp yes :eval no
+;; Official solution to Exercise 1
+;; Note: `:eval no` prevents automatic evaluation
+#+end_src
+
+#+NAME: official-solution2
+#+begin_src scheme :tangle "../src/generated/solutions/official-solution2.scm" :mkdirp yes :eval no
+;; Official solution to Exercise 2
+;; Note: `:eval no` prevents automatic evaluation
+#+end_src
+
+#+NAME: official-solution3
+#+begin_src scheme :tangle "../src/generated/solutions/official-solution3.scm" :mkdirp yes :eval no
+;; Official solution to Exercise 3
+;; Note: `:eval no` prevents automatic evaluation
+#+end_src
+
+#+NAME: official-solution4
+#+begin_src scheme :tangle "../src/generated/solutions/official-solution4.scm" :mkdirp yes :eval no
+;; Official solution to Exercise 4
+;; Note: `:eval no` prevents automatic evaluation
+#+end_src

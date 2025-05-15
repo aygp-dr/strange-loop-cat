@@ -2,9 +2,12 @@
 #+AUTHOR: Jason Walsh
 #+EMAIL: j@wal.sh
 #+DATE: 2025-05-11
-#+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes
-#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes
+#+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes :tangle yes
+#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes :tangle yes
 #+PROPERTY: header-args:mermaid :file ../images/diagrams/:results file :exports both
+
+# Tangle destination for Scheme code
+#+PROPERTY: tangle-dir "../src/generated/"
 #+OPTIONS: toc:3 num:3 
 #+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
 
@@ -19,7 +22,8 @@ Functors are structure-preserving maps between categories. They map:
 
 Let's load our category theory module first:
 
-#+begin_src scheme
+#+NAME: module-loading
+#+begin_src scheme :tangle ../src/generated/functors-module.scm :mkdirp yes
 (add-to-load-path "../src/guile")
 (use-modules (category))
 
@@ -30,7 +34,11 @@ Let's load our category theory module first:
 
 Let's create two simple categories to work with:
 
-#+begin_src scheme
+#+NAME: categories-def
+#+begin_src scheme :tangle ../src/generated/functors-categories.scm :noweb yes
+;; First include the module loading code
+<<module-loading>>
+
 ;; Category C
 (define c-obj1 (make-object "C1"))
 (define c-obj2 (make-object "C2"))
@@ -58,7 +66,11 @@ Let's create two simple categories to work with:
 
 Now let's define a functor F from category C to category D:
 
-#+begin_src scheme
+#+NAME: functor-impl
+#+begin_src scheme :tangle ../src/generated/functors-implementation.scm :noweb yes
+;; First include categories definition
+<<categories-def>>
+
 ;; Define a functor as a mapping of objects and morphisms
 (define (functor-obj obj)
   (cond ((equal? obj c-obj1) d-obj1)
@@ -89,7 +101,7 @@ Now let's define a functor F from category C to category D:
 
 Let's visualize how a functor maps between categories:
 
-#+begin_src mermaid :file ../images/diagrams/functor-vis.mmd
+#+begin_src mermaid :file ../images/diagrams/functor-vis.png :tangle ../docs/diagrams/functor-vis.mmd :mkdirp yes
 graph TB
     subgraph "Category C"
     C1((C1)) --> |f| C2((C2))
@@ -117,7 +129,7 @@ There are two main types of functors:
 1. *Covariant Functors* - Preserve the direction of morphisms
 2. *Contravariant Functors* - Reverse the direction of morphisms
 
-#+begin_src mermaid :file ../images/diagrams/contravariant.mmd
+#+begin_src mermaid :file ../images/diagrams/contravariant.png :tangle ../docs/diagrams/contravariant.mmd :mkdirp yes
 graph TB
     subgraph "Covariant Functor"
     A1((A)) --> |f| B1((B))
@@ -138,7 +150,7 @@ graph TB
 
 An endofunctor is a functor from a category to itself. These are particularly important as they form the basis for monads, which we'll explore in a later notebook.
 
-#+begin_src mermaid :file ../images/diagrams/endofunctor.mmd
+#+begin_src mermaid :file ../images/diagrams/endofunctor.png :tangle ../docs/diagrams/endofunctor.mmd :mkdirp yes
 graph LR
     subgraph "Category C"
     A((A)) --> |f| B((B))
@@ -165,7 +177,11 @@ G(X) ---G(f)--→ G(Y)
 
 Let's define two functors and a natural transformation between them:
 
-#+begin_src scheme
+#+NAME: natural-transformation-impl
+#+begin_src scheme :tangle ../src/generated/functors-natural-transformation.scm :noweb yes
+;; First include functor implementation
+<<functor-impl>>
+
 ;; Define a second functor G from C to D
 (define (functor-g-obj obj)
   (cond ((equal? obj c-obj1) d-obj1)
@@ -199,7 +215,7 @@ Let's define two functors and a natural transformation between them:
 
 Let's visualize our natural transformation:
 
-#+begin_src mermaid :file ../images/diagrams/natural-trans.mmd
+#+begin_src mermaid :file ../images/diagrams/natural-trans.png :tangle ../docs/diagrams/natural-trans.mmd :mkdirp yes
 graph TD
     FC1((F(C1))) --> |F(f)| FC2((F(C2)))
     GC1((G(C1))) --> |G(f)| GC2((G(C2)))
@@ -220,7 +236,7 @@ Functors can create interesting self-referential structures when they map a cate
 
 One classic example is the fixed-point combinator in programming, which creates a form of self-reference:
 
-#+begin_src scheme
+#+begin_src scheme :tangle ../src/generated/functors-y-combinator.scm :mkdirp yes
 ;; Y combinator (fixed-point combinator)
 (define (Y f)
   ((lambda (x) (f (lambda (y) ((x x) y))))
@@ -244,7 +260,7 @@ One classic example is the fixed-point combinator in programming, which creates 
 
 Natural transformations can form strange loops when composed in certain ways. For example, if we have natural transformations α: F ⇒ G and β: G ⇒ F, we can compose them to get a "loop" that takes us from F back to F.
 
-#+begin_src mermaid :file ../images/diagrams/nt-strange-loop.mmd
+#+begin_src mermaid :file ../images/diagrams/nt-strange-loop.png :tangle ../docs/diagrams/nt-strange-loop.mmd :mkdirp yes
 graph TB
     F((F)) --> |α| G((G))
     G --> |β| F
@@ -263,7 +279,7 @@ This creates a deep connection between an object and the ways it can be "viewed"
 
 We'll explore this further in a dedicated notebook on the Yoneda Lemma.
 
-#+begin_src mermaid :file ../images/diagrams/yoneda-preview.mmd
+#+begin_src mermaid :file ../images/diagrams/yoneda-preview.png :tangle ../docs/diagrams/yoneda-preview.mmd :mkdirp yes
 graph LR
     A((A)) --> |f| B((B))
     B --> |"Hom(A,-)"| HomAB(("Hom(A,B)"))
@@ -275,14 +291,633 @@ graph LR
     style HomAB fill:#bbf,stroke:#333,stroke-width:2px
 #+end_src
 
+* Practical Examples of Functors in Programming
+
+In this section, we'll explore practical applications of functors in programming, showing how category theory concepts manifest in everyday code.
+
+** Functors for Data Validation
+
+Validation predicates can be viewed as arrows in a category, and functors can transform these predicates to work with different types:
+
+#+NAME: validation-functors
+#+begin_src scheme :tangle ../src/generated/functors-validation.scm :mkdirp yes
+;; First, define some simple predicates
+(define (is-positive? n) (> n 0))
+(define (is-numeric? str) 
+  (string->number str))
+(define (is-length? n str)
+  (= (string-length str) n))
+
+;; A functor that lifts a predicate to work on lists
+(define (list-validator-functor pred)
+  (lambda (lst)
+    (if (null? lst)
+        #t
+        (and (pred (car lst))
+             ((list-validator-functor pred) (cdr lst))))))
+
+;; A functor that combines predicates
+(define (and-functor pred1 pred2)
+  (lambda (x)
+    (and (pred1 x) (pred2 x))))
+
+;; Example: ZipCode validator as a composition of functors
+(define (is-zipcode? str)
+  (and (is-length? 5 str)
+       (is-numeric? str)))
+
+;; Test our validators
+(display "Testing validation functors:\n")
+(display "Is 12345 a valid zipcode? ")
+(display (is-zipcode? "12345"))
+(newline)
+
+(display "Is 'abc' a valid zipcode? ")
+(display (is-zipcode? "abc"))
+(newline)
+
+(display "Are all numbers in [1, 2, 3] positive? ")
+(display ((list-validator-functor is-positive?) '(1 2 3)))
+(newline)
+
+(display "Are all numbers in [1, -2, 3] positive? ")
+(display ((list-validator-functor is-positive?) '(1 -2 3)))
+(newline)
+#+end_src
+
+** Map, Filter, and Reduce as Functorial Operations
+
+The classic functional programming operations map, filter, and reduce can be understood in terms of functors:
+
+#+NAME: functional-operations
+#+begin_src scheme :tangle ../src/generated/functors-functional.scm :mkdirp yes
+;; Map is a direct example of a functor
+;; It transforms a function f: A → B into a function [A] → [B]
+(define (my-map f lst)
+  (if (null? lst)
+      '()
+      (cons (f (car lst))
+            (my-map f (cdr lst)))))
+
+;; Filter is related to the "powerset functor"
+(define (my-filter pred lst)
+  (cond ((null? lst) '())
+        ((pred (car lst))
+         (cons (car lst) (my-filter pred (cdr lst))))
+        (else
+         (my-filter pred (cdr lst)))))
+
+;; Reduce (fold) can be viewed as a natural transformation
+;; from the list functor to the identity functor
+(define (my-reduce f init lst)
+  (if (null? lst)
+      init
+      (my-reduce f 
+                (f init (car lst))
+                (cdr lst))))
+
+;; Example: Using map, filter, reduce with a list of numbers
+(define numbers '(1 2 3 4 5 6 7 8 9 10))
+
+(display "Original list: ")
+(display numbers)
+(newline)
+
+(display "After mapping (double): ")
+(display (my-map (lambda (x) (* 2 x)) numbers))
+(newline)
+
+(display "After filtering (even numbers): ")
+(display (my-filter (lambda (x) (= (remainder x 2) 0)) numbers))
+(newline)
+
+(display "After reducing (sum): ")
+(display (my-reduce + 0 numbers))
+(newline)
+#+end_src
+
+** Option/Maybe as a Functor
+
+The Option/Maybe type from functional programming is a classic example of a functor:
+
+#+NAME: maybe-functor
+#+begin_src scheme :tangle ../src/generated/functors-maybe.scm :mkdirp yes
+;; Define the Maybe type using tagged lists
+(define (just value) (list 'just value))
+(define (nothing) (list 'nothing))
+
+(define (maybe? obj)
+  (and (pair? obj)
+       (or (eq? (car obj) 'just)
+           (eq? (car obj) 'nothing))))
+
+(define (just? obj)
+  (and (maybe? obj) (eq? (car obj) 'just)))
+
+(define (nothing? obj)
+  (and (maybe? obj) (eq? (car obj) 'nothing)))
+
+(define (maybe-value obj)
+  (if (just? obj)
+      (cadr obj)
+      (error "Cannot extract value from Nothing")))
+
+;; The Maybe functor maps a function a → b to Maybe a → Maybe b
+(define (maybe-map f maybe-obj)
+  (if (just? maybe-obj)
+      (just (f (maybe-value maybe-obj)))
+      maybe-obj))  ;; Preserve Nothing
+
+;; Safe division example using Maybe
+(define (safe-div a b)
+  (if (= b 0)
+      (nothing)
+      (just (/ a b))))
+
+;; Test our Maybe functor
+(display "Testing the Maybe functor:\n")
+
+(display "safe-div 10 2: ")
+(display (safe-div 10 2))
+(newline)
+
+(display "safe-div 10 0: ")
+(display (safe-div 10 0))
+(newline)
+
+(display "maybe-map square (just 4): ")
+(display (maybe-map (lambda (x) (* x x)) (just 4)))
+(newline)
+
+(display "maybe-map square (nothing): ")
+(display (maybe-map (lambda (x) (* x x)) (nothing)))
+(newline)
+
+;; Chaining operations with Maybe
+(define (div-and-square a b)
+  (maybe-map (lambda (x) (* x x)) (safe-div a b)))
+
+(display "div-and-square 10 2: ")
+(display (div-and-square 10 2))
+(newline)
+
+(display "div-and-square 10 0: ")
+(display (div-and-square 10 0))
+(newline)
+#+end_src
+
+** Fixed Points and Approximation Algorithms
+
+Fixed points are crucial in many recursive algorithms. Here's how they connect to the Y-combinator:
+
+#+NAME: fixed-point-examples
+#+begin_src scheme :tangle ../src/generated/functors-fixed-points.scm :mkdirp yes
+;; Fixed point operator for numeric approximation
+(define (fixed-point f start-value)
+  (define tolerance 0.00001)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try start-value))
+
+;; Example: Computing square root using fixed point
+(define (sqrt-fixed-point x)
+  (fixed-point (lambda (y) (/ (+ y (/ x y)) 2))
+               1.0))
+
+(display "Square root of 16 using fixed point: ")
+(display (sqrt-fixed-point 16))
+(newline)
+
+;; Solving equations using fixed points
+(display "Fixed point of cos(x): ")
+(display (fixed-point cos 1.0))
+(newline)
+
+;; Newton's method as fixed point iteration
+(define (newton-transform g)
+  (lambda (x)
+    (- x (/ (g x) ((derivative g) x)))))
+
+(define (derivative g)
+  (define dx 0.00001)
+  (lambda (x)
+    (/ (- (g (+ x dx)) (g x))
+       dx)))
+
+(define (newton-method g guess)
+  (fixed-point (newton-transform g) guess))
+
+;; Find roots of x^2 - 4 = 0 using Newton's method
+(define (square-minus-4 x)
+  (- (* x x) 4))
+
+(display "Root of x^2 - 4 = 0 using Newton's method: ")
+(display (newton-method square-minus-4 1.0))
+(newline)
+#+end_src
+
 * Exercises
 
 1. Implement a contravariant functor and verify that it reverses the direction of morphisms.
 
 2. Create a pair of functors F, G from a category C to D and define natural transformations α: F ⇒ G and β: G ⇒ F.
 
-3. Find examples of functors and natural transformations in everyday computing:
+3. Implement a custom validation library for email addresses and phone numbers using the functor pattern shown above.
+
+4. Create a more complex example of fixed point calculation, such as finding eigenvalues of a matrix.
+
+5. Implement the list monad (an extension of the list functor) and show how it can be used for non-deterministic computation.
+
+6. Find examples of functors and natural transformations in everyday computing:
    - How does a database mapping relate to a functor?
    - How might different programming languages represent the same algorithm (a natural transformation)?
 
-4. Think about how the Y combinator relates to the concept of a "strange loop" and how this might be formalized in categorical terms.
+7. Think about how the Y combinator relates to the concept of a "strange loop" and how this might be formalized in categorical terms.
+
+* Exercise Workspace
+
+This section provides a dedicated space to work on the exercises. You can modify the code blocks below, execute them in Emacs, and when you're satisfied with your solutions, you can tangle them back to the appropriate files.
+
+** Exercise 1 Workspace - Contravariant Functor
+
+#+NAME: contravariant-functor
+#+begin_src scheme :tangle "../src/generated/exercises/functors-ex1-contravariant.scm" :mkdirp yes
+;; First include the module loading code
+(add-to-load-path "../src/guile")
+(use-modules (category))
+
+;; Create a simple source category
+(define s-a (make-object "A"))
+(define s-b (make-object "B"))
+(define s-c (make-object "C"))
+(define s-f (make-morphism "f" s-a s-b))
+(define s-g (make-morphism "g" s-b s-c))
+(define s-cat (make-category "Source" 
+                           (list s-a s-b s-c) 
+                           (list s-f s-g)))
+
+;; Create a simple target category
+(define t-x (make-object "X"))
+(define t-y (make-object "Y"))
+(define t-z (make-object "Z"))
+(define t-p (make-morphism "p" t-x t-y))
+(define t-q (make-morphism "q" t-y t-z))
+(define t-cat (make-category "Target" 
+                           (list t-x t-y t-z) 
+                           (list t-p t-q)))
+
+;; Contravariant functor maps objects
+;; The key is that it reverses the direction of morphisms
+(define (contra-functor-obj obj)
+  (cond ((equal? obj s-a) t-z)       ;; A → Z (flipped)
+        ((equal? obj s-b) t-y)       ;; B → Y (flipped)
+        ((equal? obj s-c) t-x)       ;; C → X (flipped)
+        (else (error "Object not in source category"))))
+
+;; Contravariant functor maps morphisms - REVERSING DIRECTIONS
+(define (contra-functor-mor mor)
+  (let ((name (cadr mor))
+        (domain (caddr mor))
+        (codomain (cadddr mor)))
+    (cond ((equal? name "f") t-q)    ;; f: A → B maps to q: Y → Z (but reversed: Z ← Y)
+          ((equal? name "g") t-p)    ;; g: B → C maps to p: X → Y (but reversed: Y ← X)
+          (else (error "Morphism not in source category")))))
+
+;; Test contravariant functor
+(display "CONTRAVARIANT FUNCTOR DEMONSTRATION\n\n")
+
+(display "Source category objects and morphisms:\n")
+(display "s-a: ") (display s-a) (newline)
+(display "s-b: ") (display s-b) (newline)
+(display "s-c: ") (display s-c) (newline)
+(display "s-f (A → B): ") (display s-f) (newline)
+(display "s-g (B → C): ") (display s-g) (newline)
+
+(display "\nTarget category objects and morphisms:\n")
+(display "t-x: ") (display t-x) (newline)
+(display "t-y: ") (display t-y) (newline)
+(display "t-z: ") (display t-z) (newline)
+(display "t-p (X → Y): ") (display t-p) (newline)
+(display "t-q (Y → Z): ") (display t-q) (newline)
+
+(display "\nContravariant functor mappings:\n")
+(display "F(A) = ") (display (contra-functor-obj s-a)) (newline)
+(display "F(B) = ") (display (contra-functor-obj s-b)) (newline)
+(display "F(C) = ") (display (contra-functor-obj s-c)) (newline)
+(display "F(f: A → B) = ") (display (contra-functor-mor s-f)) 
+(display " (reversed: Z ← Y)") (newline)
+(display "F(g: B → C) = ") (display (contra-functor-mor s-g))
+(display " (reversed: Y ← X)") (newline)
+
+;; Check compositional property: F(g ∘ f) = F(f) ∘ F(g) - order reversed!
+(define s-g-f (compose s-f s-g))
+(define t-p-q (compose t-q t-p))  ;; Note the reverse order!
+
+(display "\nTesting compositional property:\n")
+(display "g ∘ f in source: ") (display s-g-f) (newline)
+(display "F(g ∘ f) should equal p ∘ q (reversed order!): ")
+(display (contra-functor-mor s-g-f)) (newline)
+(display "p ∘ q in target: ") (display t-p-q) (newline)
+#+end_src
+
+** Exercise 2 Workspace - Natural Transformations
+
+#+NAME: natural-transformations
+#+begin_src scheme :tangle "../src/generated/exercises/functors-ex2-natural-transformations.scm" :mkdirp yes
+;; First include the module loading code
+(add-to-load-path "../src/guile")
+(use-modules (category))
+
+;; Create a simple category
+(define c-a (make-object "A"))
+(define c-b (make-object "B"))
+(define c-f (make-morphism "f" c-a c-b))
+(define c-cat (make-category "C" (list c-a c-b) (list c-f)))
+
+;; Create a target category
+(define d-x (make-object "X"))
+(define d-y (make-object "Y"))
+(define d-z (make-object "Z"))
+(define d-p (make-morphism "p" d-x d-y))
+(define d-q (make-morphism "q" d-y d-z))
+(define d-cat (make-category "D" (list d-x d-y d-z) (list d-p d-q)))
+
+;; Define first functor F: C → D
+(define (functor-f-obj obj)
+  (cond ((equal? obj c-a) d-x)
+        ((equal? obj c-b) d-z)
+        (else (error "Object not in source category"))))
+
+(define (functor-f-mor mor)
+  (let ((name (cadr mor)))
+    (cond ((equal? name "f") (compose d-p d-q))  ;; F maps f to q ∘ p
+          (else (error "Morphism not in source category")))))
+
+;; Define second functor G: C → D
+(define (functor-g-obj obj)
+  (cond ((equal? obj c-a) d-y)  ;; Different from F
+        ((equal? obj c-b) d-z)  ;; Same as F
+        (else (error "Object not in source category"))))
+
+(define (functor-g-mor mor)
+  (let ((name (cadr mor)))
+    (cond ((equal? name "f") d-q)  ;; G maps f to q only
+          (else (error "Morphism not in source category")))))
+
+;; Natural transformation α: F ⇒ G
+;; For each object X in C, we need a morphism α_X: F(X) → G(X)
+(define (alpha obj)
+  (cond ((equal? obj c-a) d-p)           ;; α_A: F(A) → G(A), or X → Y
+        ((equal? obj c-b) (identity d-z)) ;; α_B: F(B) → G(B), or Z → Z (identity)
+        (else (error "Object not in source category"))))
+
+;; Natural transformation β: G ⇒ F
+;; For each object X in C, we need a morphism β_X: G(X) → F(X)
+;; Note: This won't be a complete natural transformation since there's no morphism
+;; from Y to X in our example category D. This is intentional to show the constraints.
+(define (beta obj)
+  (cond ((equal? obj c-a) (make-morphism "impossible" d-y d-x))  ;; β_A: G(A) → F(A), or Y → X (would need to exist)
+        ((equal? obj c-b) (identity d-z))                       ;; β_B: G(B) → F(B), or Z → Z (identity)
+        (else (error "Object not in source category"))))
+
+;; Demonstrate the natural transformations
+(display "NATURAL TRANSFORMATIONS DEMONSTRATION\n\n")
+
+(display "Functor F mappings:\n")
+(display "F(A) = ") (display (functor-f-obj c-a)) (newline)
+(display "F(B) = ") (display (functor-f-obj c-b)) (newline)
+(display "F(f) = ") (display (functor-f-mor c-f)) (newline)
+
+(display "\nFunctor G mappings:\n")
+(display "G(A) = ") (display (functor-g-obj c-a)) (newline)
+(display "G(B) = ") (display (functor-g-obj c-b)) (newline)
+(display "G(f) = ") (display (functor-g-mor c-f)) (newline)
+
+(display "\nNatural transformation α: F ⇒ G components:\n")
+(display "α_A: F(A) → G(A) = ") (display (alpha c-a)) (newline)
+(display "α_B: F(B) → G(B) = ") (display (alpha c-b)) (newline)
+
+;; Check naturality condition: α_B ∘ F(f) = G(f) ∘ α_A
+(define left-side (compose (functor-f-mor c-f) (alpha c-b)))
+(define right-side (compose (alpha c-a) (functor-g-mor c-f)))
+
+(display "\nChecking naturality condition for α:\n")
+(display "α_B ∘ F(f) = ") (display left-side) (newline)
+(display "G(f) ∘ α_A = ") (display right-side) (newline)
+#+end_src
+
+** Exercise 3 Workspace - Validation Library
+
+#+NAME: validation-library
+#+begin_src scheme :tangle "../src/generated/exercises/functors-ex3-validation.scm" :mkdirp yes
+;; Email and Phone Validation Library using Functors
+
+;; Basic predicates (arrows in the category of predicates)
+(define (is-length? n str)
+  (= (string-length str) n))
+
+(define (matches-pattern? pattern str)
+  (and (string? str)
+       (regexp-exec pattern str)))
+
+(define (all-of pred-list)
+  (lambda (x)
+    (every (lambda (pred) (pred x)) pred-list)))
+
+(define (any-of pred-list)
+  (lambda (x)
+    (any (lambda (pred) (pred x)) pred-list)))
+
+;; Email validation
+(define email-pattern
+  (make-regexp "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"))
+
+(define (is-email? str)
+  (matches-pattern? email-pattern str))
+
+;; Phone validation for multiple formats
+(define us-phone-pattern
+  (make-regexp "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$"))
+
+(define intl-phone-pattern
+  (make-regexp "^\\+[0-9]{1,3}[-. ]?([0-9]{1,3})?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$"))
+
+(define (is-us-phone? str)
+  (matches-pattern? us-phone-pattern str))
+
+(define (is-intl-phone? str)
+  (matches-pattern? intl-phone-pattern str))
+
+(define (is-phone? str)
+  ((any-of (list is-us-phone? is-intl-phone?)) str))
+
+;; Functor that lifts a validator to work on maybe/option types
+(define (option-validator-functor validator)
+  (lambda (maybe-val)
+    (cond ((not maybe-val) #f)             ;; Null case
+          ((equal? maybe-val 'undefined) #f) ;; Undefined case
+          (else (validator maybe-val)))))   ;; Regular case
+
+;; Functor that lifts a validator to work on lists
+(define (list-validator-functor validator)
+  (lambda (lst)
+    (and (list? lst)
+         (every validator lst))))
+
+;; Create validators for collections
+(define is-email-list? (list-validator-functor is-email?))
+(define is-phone-list? (list-validator-functor is-phone?))
+(define is-optional-email? (option-validator-functor is-email?))
+(define is-optional-phone? (option-validator-functor is-phone?))
+
+;; Test the validation library
+(display "EMAIL VALIDATION:\n")
+(display "Valid email (test@example.com): ")
+(display (is-email? "test@example.com"))
+(newline)
+
+(display "Invalid email (test@): ")
+(display (is-email? "test@"))
+(newline)
+
+(display "List of valid emails: ")
+(display (is-email-list? '("a@b.com" "test@example.com")))
+(newline)
+
+(display "List with invalid email: ")
+(display (is-email-list? '("a@b.com" "invalid")))
+(newline)
+
+(display "Optional email (valid): ")
+(display (is-optional-email? "contact@example.org"))
+(newline)
+
+(display "Optional email (null): ")
+(display (is-optional-email? #f))
+(newline)
+
+(display "\nPHONE VALIDATION:\n")
+(display "Valid US phone (555-123-4567): ")
+(display (is-phone? "555-123-4567"))
+(newline)
+
+(display "Valid international phone (+1 555-123-4567): ")
+(display (is-phone? "+1 555-123-4567"))
+(newline)
+
+(display "Invalid phone (abc-def-ghij): ")
+(display (is-phone? "abc-def-ghij"))
+(newline)
+
+(display "List of valid phones: ")
+(display (is-phone-list? '("555-123-4567" "+1 555-123-4567")))
+(newline)
+
+(display "List with invalid phone: ")
+(display (is-phone-list? '("555-123-4567" "invalid")))
+(newline)
+#+end_src
+
+** Exercise 4 Workspace - Complex Fixed Point Calculations
+
+#+NAME: fixed-point-calculations
+#+begin_src scheme :tangle "../src/generated/exercises/functors-ex4-fixed-points.scm" :mkdirp yes
+;; Fixed point calculations for more complex examples
+
+;; Basic fixed point function from previous examples
+(define (fixed-point f start-value)
+  (define tolerance 0.00001)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try start-value))
+
+;; Matrix operations (simplified for 2x2 matrices)
+;; Represent a 2x2 matrix as a list of lists
+(define (matrix-multiply m1 m2)
+  (list 
+   (list 
+    (+ (* (car (car m1)) (car (car m2))) 
+       (* (cadr (car m1)) (car (cadr m2))))
+    (+ (* (car (car m1)) (cadr (car m2))) 
+       (* (cadr (car m1)) (cadr (cadr m2)))))
+   (list 
+    (+ (* (car (cadr m1)) (car (car m2))) 
+       (* (cadr (cadr m1)) (car (cadr m2))))
+    (+ (* (car (cadr m1)) (cadr (car m2))) 
+       (* (cadr (cadr m1)) (cadr (cadr m2)))))))
+
+(define (matrix-scalar-multiply scalar matrix)
+  (list 
+   (list (* scalar (car (car matrix))) 
+         (* scalar (cadr (car matrix))))
+   (list (* scalar (car (cadr matrix))) 
+         (* scalar (cadr (cadr matrix))))))
+
+(define (matrix-add m1 m2)
+  (list 
+   (list (+ (car (car m1)) (car (car m2)))
+         (+ (cadr (car m1)) (cadr (car m2))))
+   (list (+ (car (cadr m1)) (car (cadr m2)))
+         (+ (cadr (cadr m1)) (cadr (cadr m2))))))
+
+(define (matrix-subtract m1 m2)
+  (matrix-add m1 (matrix-scalar-multiply -1 m2)))
+
+;; Matrix normalization (divide by largest element)
+(define (matrix-normalize m)
+  (let ((max-element (apply max (append (car m) (cadr m)))))
+    (if (= max-element 0)
+        m  ;; Avoid division by zero
+        (matrix-scalar-multiply (/ 1.0 max-element) m))))
+
+;; Power iteration method for finding the dominant eigenvalue and eigenvector
+(define (power-iteration matrix initial-vector max-iterations)
+  (define (iterate vector iterations)
+    (if (= iterations 0)
+        vector
+        (let ((new-vector (matrix-multiply matrix vector)))
+          (iterate (matrix-normalize new-vector) (- iterations 1)))))
+  
+  (iterate initial-vector max-iterations))
+
+;; Example matrix with known eigenvalues
+(define test-matrix '((4 1) (2 3)))
+(define initial-vector '((1) (1)))
+
+;; Display the matrix
+(display "Finding eigenvalues of matrix:\n")
+(display test-matrix)
+(newline)
+
+;; Run power iteration
+(display "\nPower iteration to find dominant eigenvector:\n")
+(define eigenvector (power-iteration test-matrix initial-vector 10))
+(display "Approximate eigenvector: ")
+(display eigenvector)
+(newline)
+
+;; Estimate eigenvalue using the Rayleigh quotient
+(define Ax (matrix-multiply test-matrix eigenvector))
+(define x-dot-Ax (+ (* (car (car eigenvector)) (car (car Ax)))
+                    (* (car (cadr eigenvector)) (car (cadr Ax)))))
+(define x-dot-x (+ (* (car (car eigenvector)) (car (car eigenvector)))
+                   (* (car (cadr eigenvector)) (car (cadr eigenvector)))))
+(define eigenvalue (/ x-dot-Ax x-dot-x))
+
+(display "Approximate dominant eigenvalue: ")
+(display eigenvalue)
+(newline)
+
+;; The theoretical eigenvalues of the matrix are 5 and 2
+(display "\nTheoretical eigenvalues for comparison: 5 and 2\n")
+#+end_src

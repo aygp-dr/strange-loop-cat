@@ -18,7 +18,7 @@ src/generated:
 	mkdir -p $@
 
 # Variables
-GUILE = guile
+GUILE = guile3
 EMACS = emacs
 MERMAID_CLI = npx @mermaid-js/mermaid-cli
 MERMAID_FILES = $(wildcard images/diagrams/*.mmd)

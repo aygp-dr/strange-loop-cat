@@ -1,0 +1,560 @@
+#+TITLE: Fixed Points and Convergence: Self-Reference in Computation
+#+AUTHOR: Aidan Pace
+#+EMAIL: apace@defrecord.com
+#+DATE: 2025-05-15
+#+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes :tangle yes
+#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes :tangle yes
+#+PROPERTY: header-args:mermaid :file ../images/diagrams/:results file :exports both
+#+OPTIONS: toc:3 num:3 
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+
+# Tangle destination for Scheme code
+#+PROPERTY: tangle-dir "../src/generated/"
+
+* Fixed Points: Where Self-Reference Meets Convergence
+
+A fixed point of a function f is a value x where f(x) = x - the function maps the value back to itself.
+This concept appears throughout mathematics and computer science, creating a form of self-reference
+that relates deeply to category theory and strange loops.
+
+** Loading Required Modules
+
+#+NAME: module-loading
+#+begin_src guile :tangle ../src/generated/fixed-points.scm :mkdirp yes
+(use-modules (ice-9 format)
+             (srfi srfi-1)     ; List library
+             (srfi srfi-26)    ; Cut/cute partial application
+             (srfi srfi-42)    ; Eager comprehensions
+             (ice-9 match))    ; Pattern matching
+
+(display "Modules loaded successfully.\n")
+#+end_src
+
+** The Fixed Point Combinator
+
+Let's define a general fixed-point finder:
+
+#+NAME: fixed-point-operator
+#+begin_src guile :tangle ../src/generated/fixed-points.scm
+;; Continuous fixed point finder
+(define (fixed-point f initial-guess #:optional #:key
+                     (tolerance 0.00001)
+                     (max-iterations 1000))
+  (let loop ((guess initial-guess)
+             (iterations 0))
+    (let ((next (f guess)))
+      (cond
+       ((> iterations max-iterations)
+        (values guess 'max-iterations-reached))
+       
+       ((< (abs (- next guess)) tolerance)
+        (values guess 'converged))
+       
+       (else
+        (loop next (+ iterations 1)))))))
+
+;; For discrete cases (exact values)
+(define (discrete-fixed-point f initial-value)
+  (let loop ((current initial-value)
+             (iterations 0))
+    (let ((next (f current)))
+      (cond
+       ((> iterations 1000)
+        (values current 'max-iterations-reached))
+       
+       ((equal? next current)
+        (values current 'converged))
+       
+       (else
+        (loop next (+ iterations 1)))))))
+
+;; Test the fixed point finder
+(let-values (((result status) (fixed-point cos 1.0)))
+  (format #t "Fixed point of cosine: ~a (status: ~a)\n" 
+          result status))
+#+end_src
+
+* Convergence in Optimization
+
+** Gradient Descent with Convergence Tracking
+
+#+NAME: gradient-descent
+#+begin_src guile :tangle ../src/generated/fixed-points-gradient.scm :mkdirp yes
+;; Gradient descent with convergence tracking
+(define (gradient-descent f gradient initial-point
+                         #:optional #:key
+                         (learning-rate 0.01)
+                         (tolerance 0.00001)
+                         (max-iterations 1000))
+  
+  ;; Track history of points, values, and gradients
+  (define history '())
+  
+  ;; Check for oscillation in recent iterations
+  (define (oscillating? history-subset)
+    (let* ((gradients (map caddr history-subset))
+           (signs (map (lambda (g) (if (> g 0) 1 -1)) gradients))
+           (sign-changes 
+            (count (lambda (pair) (not (= (car pair) (cadr pair))))
+                   (zip signs (cdr signs)))))
+      (> sign-changes (/ (length signs) 2))))
+  
+  ;; Check if progress is too slow
+  (define (progress-too-slow? history-subset)
+    (let* ((values (map cadr history-subset))
+           (improvements 
+            (map (lambda (pair) (abs (- (car pair) (cadr pair))))
+                 (zip values (cdr values)))))
+      (< (apply max improvements) (* tolerance 10))))
+  
+  ;; Main iteration loop
+  (let loop ((point initial-point)
+             (iteration 0))
+    (let* ((value (f point))
+           (grad (gradient point))
+           (grad-magnitude (sqrt (apply + (map * grad grad)))))
+      
+      ;; Add current state to history
+      (set! history (cons (list point value grad) history))
+      
+      (cond
+       ;; Stop if maximum iterations reached
+       ((>= iteration max-iterations)
+        (values point value 'max-iterations-reached history))
+       
+       ;; Stop if gradient is nearly zero (at fixed point)
+       ((< grad-magnitude tolerance)
+        (values point value 'converged-to-fixed-point history))
+       
+       ;; Stop if oscillating (might need smaller learning rate)
+       ((and (> (length history) 10)
+             (oscillating? (take history 10)))
+        (values point value 'oscillation-detected history))
+       
+       ;; Stop if progress is too slow
+       ((and (> (length history) 5)
+             (progress-too-slow? (take history 5)))
+        (values point value 'slow-progress history))
+       
+       ;; Continue with gradient descent step
+       (else
+        (let ((next-point 
+               (map (lambda (p g) (- p (* learning-rate g)))
+                    point grad)))
+          (loop next-point (+ iteration 1))))))))
+
+;; Example usage with a simple function
+(define (example-function point)
+  (let ((x (car point))
+        (y (cadr point)))
+    (+ (* x x) (* y y)))) ; f(x,y) = x² + y²
+
+(define (example-gradient point)
+  (let ((x (car point))
+        (y (cadr point)))
+    (list (* 2 x) (* 2 y)))) ; ∇f = (2x, 2y)
+
+;; Test the gradient descent
+(let-values (((minimum value status history) 
+              (gradient-descent example-function 
+                               example-gradient
+                               '(10.0 10.0))))
+  (format #t "Minimum found at: (~a, ~a)\n" 
+          (car minimum) (cadr minimum))
+  (format #t "Minimum value: ~a\n" value)
+  (format #t "Status: ~a\n" status)
+  (format #t "Iterations: ~a\n" (length history)))
+#+end_src
+
+** Contracts for Convergence Guarantees in Guile
+
+Guile 3 supports contracts through GOOPS (Guile Object Oriented Programming System):
+
+#+NAME: convergence-contracts
+#+begin_src guile :tangle ../src/generated/fixed-points-contracts.scm :mkdirp yes
+(use-modules (oop goops)
+             (ice-9 format))
+
+;; Define contract system
+(define-class <contract> ()
+  (name #:init-keyword #:name #:getter contract-name)
+  (predicate #:init-keyword #:predicate #:getter contract-predicate)
+  (message #:init-keyword #:message #:getter contract-message))
+
+(define (make-contract name predicate message)
+  (make <contract> #:name name #:predicate predicate #:message message))
+
+(define (check-contract contract value)
+  (let ((predicate (contract-predicate contract)))
+    (if (predicate value)
+        value
+        (error (format #f "Contract '~a' violated: ~a" 
+                       (contract-name contract)
+                       (contract-message contract))))))
+
+;; Contract for functions that should have fixed points
+(define has-fixed-point-contract
+  (make-contract
+   'has-fixed-point
+   (lambda (f)
+     ;; Check a sample of points in [0,1] to see if any might be close to fixed points
+     (let* ((samples (map (lambda (i) (/ i 10.0)) (iota 11)))
+            (differences (map (lambda (x) (abs (- (f x) x))) samples)))
+       (< (apply min differences) 0.2))) ; At least one point gets close
+   "Function must have at least one fixed point"))
+
+;; Contract for contraction mappings that guarantee convergence
+(define contraction-mapping-contract
+  (make-contract
+   'contraction-mapping
+   (lambda (f)
+     ;; Check Lipschitz constant on sample points
+     (let* ((samples (map (lambda (i) (/ i 5.0)) (iota 11)))
+            (pairs (append-map (lambda (x)
+                                (map (lambda (y) (cons x y))
+                                     (remove (lambda (z) (= x z)) samples)))
+                              samples))
+            (lipschitz-constants
+             (map (lambda (pair)
+                    (let ((x (car pair))
+                          (y (cdr pair)))
+                      (/ (abs (- (f x) (f y)))
+                         (abs (- x y)))))
+                  pairs)))
+       (< (apply max lipschitz-constants) 1.0)))
+   "Function must be a contraction mapping (Lipschitz constant < 1)"))
+
+;; Function to apply contracts
+(define (with-contracts contracts f)
+  (for-each (lambda (contract) (check-contract contract f)) contracts)
+  f)
+
+;; Example use
+(define sqrt-approximator
+  (with-contracts
+   (list has-fixed-point-contract)
+   (lambda (x) (/ (+ x (/ 2.0 x)) 2))))
+
+(format #t "Testing sqrt(2) approximator with contracts...\n")
+(let-values (((result status) 
+              (fixed-point sqrt-approximator 1.0 
+                          #:tolerance 0.0001)))
+  (format #t "√2 ≈ ~a (status: ~a)\n" result status))
+
+;; This would fail the contraction mapping contract in parts of its domain
+(define (try-non-contraction)
+  (with-contracts
+   (list contraction-mapping-contract)
+   (lambda (x) (+ (* x x) 0.1))))
+
+;; Uncomment to see the error
+;; (try-non-contraction)
+#+end_src
+
+* Mathematical Conditions for Fixed Points
+
+** Implementing the Banach Fixed Point Theorem
+
+#+NAME: banach-theorem
+#+begin_src guile :tangle ../src/generated/fixed-points-banach.scm :mkdirp yes
+;; Functions for verifying and applying the Banach Fixed Point Theorem
+
+;; Generate a sample of points from a domain
+(define (sample-domain lower upper samples)
+  (let ((step (/ (- upper lower) (- samples 1))))
+    (map (lambda (i) (+ lower (* i step)))
+         (iota samples))))
+
+;; Compute Lipschitz constant approximation
+(define (approximate-lipschitz-constant f domain-min domain-max samples)
+  (let* ((points (sample-domain domain-min domain-max samples))
+         (point-pairs (append-map 
+                       (lambda (x)
+                         (map (lambda (y) (cons x y))
+                              (remove (lambda (z) (= x z)) points)))
+                       points))
+         (ratios 
+          (map (lambda (pair)
+                 (let ((x (car pair))
+                       (y (cdr pair)))
+                   (/ (abs (- (f x) (f y)))
+                      (abs (- x y)))))
+               point-pairs)))
+    (apply max ratios)))
+
+;; Check if a function is a contraction mapping
+(define (contraction-mapping? f domain-min domain-max samples)
+  (< (approximate-lipschitz-constant f domain-min domain-max samples) 1.0))
+
+;; Apply Banach theorem to find fixed point
+(define (banach-fixed-point f domain-min domain-max
+                           #:optional #:key
+                           (samples 50)
+                           (initial-guess (/ (+ domain-min domain-max) 2))
+                           (tolerance 0.00001))
+  
+  ;; First check if the function is a contraction mapping
+  (let ((lipschitz (approximate-lipschitz-constant 
+                    f domain-min domain-max samples)))
+    
+    (if (>= lipschitz 1.0)
+        (begin
+          (format #t "Warning: Function has Lipschitz constant ~a ≥ 1\n" 
+                  lipschitz)
+          (format #t "Convergence not guaranteed by Banach theorem\n")
+          (fixed-point f initial-guess #:tolerance tolerance))
+        
+        (begin
+          (format #t "Function has Lipschitz constant ~a < 1\n" lipschitz)
+          (format #t "Convergence guaranteed by Banach Fixed Point Theorem\n")
+          ;; We can predict the number of iterations needed for convergence
+          (let* ((error-reduction-per-step lipschitz)
+                 (initial-error (abs (- (f initial-guess) initial-guess)))
+                 (iterations-needed
+                  (ceiling (/ (log (/ tolerance initial-error))
+                              (log error-reduction-per-step)))))
+            (format #t "Predicted iterations needed: ~a\n" iterations-needed)
+            (fixed-point f initial-guess #:tolerance tolerance))))))
+
+;; Example with guaranteed convergence: f(x) = cos(x)
+(format #t "\nTesting Banach theorem with cos(x):\n")
+(banach-fixed-point cos 0.0 1.0)
+
+;; Example without guaranteed convergence: f(x) = 3x(1-x)
+(format #t "\nTesting with logistic map f(x) = 3x(1-x):\n")
+(banach-fixed-point 
+ (lambda (x) (* 3 x (- 1 x)))
+ 0.0 1.0)
+#+end_src
+
+** Visualizing Fixed Point Convergence
+
+#+NAME: convergence-visualization
+#+begin_src mermaid :file ../images/diagrams/fixed-point-convergence.png :tangle ../docs/diagrams/fixed-point-convergence.mmd :mkdirp yes
+graph LR
+    X0((x₀)) --> |f| X1((x₁))
+    X1 --> |f| X2((x₂))
+    X2 --> |f| X3((x₃))
+    X3 --> |f| X4((x₄))
+    X4 --> |f| Xf((Fixed Point))
+    Xf --> |f| Xf
+    
+    style Xf fill:#f9f,stroke:#333,stroke-width:4px
+    style X0 fill:#ccf,stroke:#333,stroke-width:2px
+    style X4 fill:#fcf,stroke:#333,stroke-width:2px
+#+end_src
+
+For a more detailed visualization, we can generate data for plotting:
+
+#+NAME: generate-plot-data
+#+begin_src guile :tangle ../src/generated/fixed-points-plots.scm :mkdirp yes
+;; Generate data for plotting fixed point iterations
+(define (generate-iteration-data f initial iterations)
+  (let loop ((x initial)
+             (i 0)
+             (results '()))
+    (if (>= i iterations)
+        (reverse results)
+        (let ((next (f x)))
+          (loop next
+                (+ i 1)
+                (cons (list i x next) results))))))
+
+;; Example with cosine function
+(define cos-iterations (generate-iteration-data cos 1.0 20))
+
+;; Output data in a format suitable for plotting
+(format #t "# Iterations of cos(x) starting at x₀ = 1.0\n")
+(format #t "# i, x_i, cos(x_i)\n")
+(for-each (lambda (row)
+            (format #t "~a, ~a, ~a\n" 
+                    (car row) (cadr row) (caddr row)))
+          cos-iterations)
+#+end_src
+
+* Why Some Functions Have Fixed Points and Others Don't
+
+** Analysis of Fixed Point Existence
+
+#+NAME: fixed-point-existence
+#+begin_src guile :tangle ../src/generated/fixed-points-analysis.scm :mkdirp yes
+;; Analyze whether a function has fixed points in a given domain
+
+(define (analyze-fixed-points f domain-min domain-max samples)
+  (let* ((points (sample-domain domain-min domain-max samples))
+         (values (map f points))
+         (differences (map - values points))
+         (sign-changes
+          (count (lambda (pair)
+                   (let ((a (car pair))
+                         (b (cadr pair)))
+                     (not (= (if (>= a 0) 1 -1)
+                             (if (>= b 0) 1 -1)))))
+                 (zip differences (cdr differences)))))
+    
+    ;; Intermediate value theorem: if the difference changes sign,
+    ;; there must be a fixed point in between
+    (if (> sign-changes 0)
+        (format #t "Function likely has ~a fixed points in [~a, ~a]\n" 
+                sign-changes domain-min domain-max)
+        (format #t "No evidence of fixed points in [~a, ~a]\n" 
+                domain-min domain-max))))
+
+;; Examples:
+(format #t "Analyzing f(x) = √x:\n")
+(analyze-fixed-points sqrt 0.1 2.0 20)
+
+(format #t "\nAnalyzing f(x) = 2x:\n")
+(analyze-fixed-points (lambda (x) (* 2 x)) -5.0 5.0 20)
+
+(format #t "\nAnalyzing f(x) = cos(x):\n")
+(analyze-fixed-points cos 0.0 1.0 20)
+
+(format #t "\nAnalyzing f(x) = sin(x):\n")
+(analyze-fixed-points sin -2.0 2.0 40)
+#+end_src
+
+** Brouwer Fixed Point Theorem Demonstration
+
+#+NAME: brouwer-theorem
+#+begin_src mermaid :file ../images/diagrams/brouwer-theorem.png :tangle ../docs/diagrams/brouwer-theorem.mmd :mkdirp yes
+graph TD
+    subgraph "Brouwer Fixed Point Theorem"
+    A["Continuous function f: D → D<br/>D is compact and convex"]
+    B["Fixed point exists where f(x) = x"]
+    A --> B
+    end
+    
+    subgraph "Examples"
+    C["Square root on [0,1]"]
+    D["Has fixed points at 0 and 1"]
+    E["2x on ℝ"]
+    F["Fixed point only at 0"]
+    C --> D
+    E --> F
+    end
+#+end_src
+
+* The Connection to Strange Loops
+
+Fixed points create a mathematical form of self-reference, where applying a transformation brings you back to your starting point - the essence of a strange loop.
+
+#+NAME: strange-loop-visualization
+#+begin_src mermaid :file ../images/diagrams/fixed-point-strange-loop.png :tangle ../docs/diagrams/fixed-point-strange-loop.mmd :mkdirp yes
+graph TD
+    A["Function space"] --> |"Higher-order<br/>fixed point<br/>operator"| B["Y combinator"]
+    B --> |"Creates"| C["Recursive functions"]
+    C --> |"Have"| D["Fixed points"]
+    D --> |"Create"| E["Self-reference"]
+    E --> |"Enables"| F["Strange loops"]
+    F --> |"Realized in"| A
+    
+    style B fill:#f9f,stroke:#333,stroke-width:4px
+    style F fill:#f9f,stroke:#333,stroke-width:4px
+#+end_src
+
+* The Y Combinator and Fixed Points in Recursion
+
+#+NAME: y-combinator
+#+begin_src guile :tangle ../src/generated/fixed-points-y-combinator.scm :mkdirp yes
+;; Y combinator: a fixed point combinator that enables recursion
+(define (Y f)
+  ((lambda (x) (f (lambda (y) ((x x) y))))
+   (lambda (x) (f (lambda (y) ((x x) y))))))
+
+;; Using Y to create factorial without explicit recursion
+(define factorial
+  (Y (lambda (fact)
+       (lambda (n)
+         (if (= n 0)
+             1
+             (* n (fact (- n 1))))))))
+
+;; Test the Y combinator
+(format #t "Factorial of 5: ~a\n" (factorial 5))
+(format #t "Factorial of 10: ~a\n" (factorial 10))
+
+;; Y combinator is the fixed point of the higher-order function:
+(define (factorial-generator f)
+  (lambda (n)
+    (if (= n 0)
+        1
+        (* n (f (- n 1))))))
+
+;; Y(factorial-generator) = factorial-generator(Y(factorial-generator))
+;; This is the fixed point equation!
+#+end_src
+
+* Fixed Points in Numerical Methods
+
+#+NAME: numerical-methods
+#+begin_src guile :tangle ../src/generated/fixed-points-numerical.scm :mkdirp yes
+;; Fixed point methods for solving equations
+
+;; Newton's method as fixed point iteration
+(define (newton-method f df x0 
+                       #:optional #:key
+                       (tolerance 0.00001)
+                       (max-iterations 100))
+  ;; Transform the equation f(x) = 0 into a fixed point problem
+  ;; x = x - f(x)/f'(x)
+  (let ((g (lambda (x) (- x (/ (f x) (df x))))))
+    (fixed-point g x0 
+                #:tolerance tolerance
+                #:max-iterations max-iterations)))
+
+;; Example: Find square root of 2 using Newton's method
+(define (f-sqrt2 x) (- (* x x) 2))
+(define (df-sqrt2 x) (* 2 x))
+
+(format #t "Computing √2 using Newton's method:\n")
+(let-values (((result status) 
+              (newton-method f-sqrt2 df-sqrt2 1.0)))
+  (format #t "√2 ≈ ~a (status: ~a)\n" result status)
+  (format #t "Verification: ~a² = ~a\n" 
+          result (* result result)))
+
+;; Method of successive approximations for numerical integration
+(define (successive-approximation-integral f a b initial
+                                          #:optional #:key
+                                          (steps 100)
+                                          (tolerance 0.00001))
+  ;; The integration operator as a fixed point problem
+  (let ((step (/ (- b a) steps))
+        (integration-operator 
+         (lambda (g)
+           (lambda (x)
+             (if (< x a)
+                 initial
+                 (let ((x-prev (- x step)))
+                   (+ (g x-prev)
+                      (* step (f x-prev (g x-prev))))))))))
+    
+    ;; Apply fixed point iteration on functions
+    (let ((result-function
+           (fixed-point integration-operator
+                       (lambda (x) initial)
+                       #:tolerance tolerance)))
+      ;; Return the final value at point b
+      (result-function b))))
+
+;; This gives us a framework for solving differential equations
+;; as fixed point problems
+#+end_src
+
+* Exercises
+
+1. Implement a fixed point iterator for the logistic map x → rx(1-x)
+   and explore how different values of r affect convergence.
+
+2. Use the Banach fixed point theorem to determine which of these
+   functions are guaranteed to have a unique fixed point in [0,1]:
+   a) f(x) = cos(x)
+   b) f(x) = sin(x) + x/3
+   c) f(x) = x²
+
+3. Implement Newton's method as a fixed point iteration to find the
+   cube root of a number.
+
+4. Connect the Y combinator to category theory by exploring how it
+   relates to initial algebras in the category of endofunctors.

@@ -1,0 +1,12 @@
+graph TD
+    subgraph "Monomorphism"
+    X1((X)) --> |g₁| A1((A))
+    X1 --> |g₂| A1
+    A1 --> |f| B1((B))
+    end
+    
+    subgraph "Epimorphism"
+    A2((A)) --> |f| B2((B))
+    B2 --> |g₁| Y2((Y))
+    B2 --> |g₂| Y2
+    end

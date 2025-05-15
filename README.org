@@ -10,11 +10,17 @@
 
 * Strange Loop Cat
 
-This repository explores the beautiful connections between category theory, self-reference, and formal systems. Drawing inspiration from Douglas Hofstadter's "Gödel, Escher, Bach", it provides interactive explorations of categorical concepts with a focus on strange loops and recursive structures.
+This repository explores the beautiful connections between category
+theory, self-reference, and formal systems. Drawing inspiration from
+Douglas Hofstadter's "Gödel, Escher, Bach", it provides interactive
+explorations of categorical concepts with a focus on strange loops and
+recursive structures.
 
 ** Overview
 
-Category theory offers a powerful mathematical framework for studying abstract structures and their relationships, while also providing insights into self-reference and strange loops. This project:
+Category theory offers a powerful mathematical framework for studying
+abstract structures and their relationships, while also providing
+insights into self-reference and strange loops. This project:
 
 - Visualizes categorical concepts through interactive diagrams
 - Implements categorical structures in Guile Scheme
@@ -23,45 +29,41 @@ Category theory offers a powerful mathematical framework for studying abstract s
 
 ** Quick Start
 
-1. Clone this repository
-2. Set up the environment (recommended to use [[https://direnv.net/][direnv]]):
-   #+begin_src shell
-   # If you have direnv installed
-   direnv allow .
-   
-   # Without direnv, source the environment file manually
-   source .envrc
-   #+end_src
+- Run the project initialization (one-time setup):
+  #+begin_src shell
+  make init
+  #+end_src
 
-3. Run the project initialization (one-time setup):
-   #+begin_src shell
-   make init
-   #+end_src
-
-4. Generate the diagrams:
-   #+begin_src shell
-   make mermaid
-   #+end_src
-
-5. Open any of the interactive notebooks in Emacs with org-mode
-   #+begin_src shell
-   # Open the basics notebook with Emacs
-   emacs examples/basics.org
-   
-   # Or use your favorite org-mode enabled editor
-   #+end_src
+- Open any of the interactive notebooks in Emacs with org-mode
+  #+begin_src shell
+  # Open the basics notebook with Emacs
+  emacs examples/basics.org
+  #+end_src
 
 ** Interactive Notebooks
 
-This repository contains five interactive org-mode notebooks that you can use to explore category theory concepts:
+This repository contains five interactive org-mode notebooks that you
+can use to explore category theory concepts:
 
-- [[file:examples/basics.org][Basics of Categories and Morphisms]] - Introduction to the fundamental concepts of categories, objects, morphisms, and composition
-- [[file:examples/functors.org][Functors and Natural Transformations]] - Structure-preserving maps between categories and transformations between functors
-- [[file:examples/yoneda.org][The Yoneda Lemma]] - An exploration of one of the most profound and fundamental results in category theory
-- [[file:examples/monads.org][Monads and Computational Effects]] - Understanding monads as a powerful abstraction for managing computational effects
-- [[file:examples/strange-loops.org][Strange Loops and Self-Reference]] - Examining self-reference, recursion, and tangled hierarchies with connection to Hofstadter's work
+- [[file:examples/basics.org][Basics of Categories and Morphisms]] - Introduction to the fundamental
+  concepts of categories, objects, morphisms, and composition
 
-Each notebook contains executable code blocks that demonstrate the concepts discussed and can be tangled to generate standalone Scheme files.
+- [[file:examples/functors.org][Functors and Natural Transformations]] - Structure-preserving maps
+  between categories and transformations between functors
+
+- [[file:examples/yoneda.org][The Yoneda Lemma]] - An exploration of one of the most profound and
+  fundamental results in category theory
+
+- [[file:examples/monads.org][Monads and Computational Effects]] - Understanding monads as a
+  powerful abstraction for managing computational effects
+
+- [[file:examples/strange-loops.org][Strange Loops and Self-Reference]] - Examining self-reference,
+  recursion, and tangled hierarchies with connection to Hofstadter's
+  work
+
+Each notebook contains executable code blocks that demonstrate the
+concepts discussed and can be tangled to generate standalone Scheme
+files.
 
 ** Resources
 
@@ -70,25 +72,30 @@ Each notebook contains executable code blocks that demonstrate the concepts disc
 - [[https://arxiv.org/abs/1803.05316][Seven Sketches in Compositionality]] by Brendan Fong and David Spivak
 - [[https://math.ucr.edu/home/baez/categories.html][John Baez: Categories, Quantization, and Much More]]
 - Douglas Hofstadter's "Gödel, Escher, Bach: An Eternal Golden Braid"
+- [[file:docs/guides/category-theory-interviews.org][Category Theory for Interviews: Core Concepts with GEB-Style Metaphors]]
 
 ** Available Commands
 
 This project uses Make for most operations. Here are the available commands:
 
-| Command       | Description                                         |
-|--------------+-----------------------------------------------------|
-| ~make init~    | Initialize the project, creating directories and    |
-|              | installing dependencies                              |
-| ~make mermaid~ | Generate diagrams from Mermaid definitions          |
-| ~make tangle~  | Generate Scheme source files from org file blocks   |
-| ~make test~    | Run tests for the category theory implementation    |
-| ~make docs~    | Generate HTML documentation from org files          |
-| ~make clean~   | Remove generated files                              |
-| ~make all~     | Generate diagrams and documentation                 |
+| Command        | Description                                       |
+|----------------+---------------------------------------------------|
+| ~make init~    | Initialize the project, creating directories and  |
+|                | installing dependencies                           |
+| ~make mermaid~ | Generate diagrams from Mermaid definitions        |
+| ~make tangle~  | Generate Scheme source files from org file blocks |
+| ~make test~    | Run tests for the category theory implementation  |
+| ~make docs~    | Generate HTML documentation from org files        |
+| ~make clean~   | Remove generated files                            |
+| ~make all~     | Generate diagrams and documentation               |
 
 ** GEB Connection and Self-Reference
 
-This project draws heavily from Douglas Hofstadter's seminal work "Gödel, Escher, Bach: An Eternal Golden Braid" (GEB). The concept of strange loops—processes that move through hierarchical levels and eventually return to their starting point—is central to both GEB and this project.
+This project draws heavily from Douglas Hofstadter's seminal work
+"Gödel, Escher, Bach: An Eternal Golden Braid" (GEB). The concept of
+strange loops—processes that move through hierarchical levels and
+eventually return to their starting point—is central to both GEB and
+this project.
 
 Some key connections explored in this repository:
 
@@ -97,25 +104,6 @@ Some key connections explored in this repository:
 - Fixed point operators and their relation to strange loops
 - Tangled hierarchies in category theory
 - Recursive structures and their categorical formalization
-
-** Emacs Integration
-
-This project is designed to be used with Emacs and org-mode:
-
-- All examples are provided as literate org files
-- Code blocks can be executed directly within Emacs
-- Diagrams are generated using Mermaid integration
-- noweb references allow for building complex examples incrementally
-- Babel execution environment is pre-configured
-
-** Python Utilities
-
-The Python utilities in this project provide:
-
-- Category theory structure extraction from org files
-- Visual representation generation
-- Integration with LLMs for exploring categorical concepts
-- Tools for analyzing and exploring strange loops programmatically
 
 ** License
 

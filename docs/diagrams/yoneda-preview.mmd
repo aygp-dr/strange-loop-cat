@@ -1,0 +1,9 @@
+graph LR
+    A((A)) --> |f| B((B))
+    B --> |"Hom(A,-)"| HomAB(("Hom(A,B)"))
+    A --> |"Hom(A,-)"| HomAA(("Hom(A,A)"))
+    
+    HomAA --> |"Hom(A,f)"| HomAB
+    
+    style HomAA fill:#bbf,stroke:#333,stroke-width:2px
+    style HomAB fill:#bbf,stroke:#333,stroke-width:2px

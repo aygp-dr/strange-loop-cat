@@ -1,0 +1,11 @@
+graph LR
+    X0((x₀)) --> |f| X1((x₁))
+    X1 --> |f| X2((x₂))
+    X2 --> |f| X3((x₃))
+    X3 --> |f| X4((x₄))
+    X4 --> |f| Xf((Fixed Point))
+    Xf --> |f| Xf
+    
+    style Xf fill:#f9f,stroke:#333,stroke-width:4px
+    style X0 fill:#ccf,stroke:#333,stroke-width:2px
+    style X4 fill:#fcf,stroke:#333,stroke-width:2px

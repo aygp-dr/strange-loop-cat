@@ -1,0 +1,7 @@
+graph TD
+    A((Formal System)) --> |"Contains"| B((Statements))
+    B --> |"Some refer to"| A
+    B --> |"Include G"| C(("G: 'G cannot be proven'"))
+    C --> |"References"| C
+    
+    style C fill:#f99,stroke:#333,stroke-width:2px

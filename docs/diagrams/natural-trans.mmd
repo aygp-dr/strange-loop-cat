@@ -1,0 +1,10 @@
+graph TD
+    FC1((F(C1))) --> |F(f)| FC2((F(C2)))
+    GC1((G(C1))) --> |G(f)| GC2((G(C2)))
+    FC1 --> |η_C1| GC1
+    FC2 --> |η_C2| GC2
+    
+    style FC1 fill:#bbf,stroke:#333,stroke-width:2px
+    style FC2 fill:#bbf,stroke:#333,stroke-width:2px
+    style GC1 fill:#fbb,stroke:#333,stroke-width:2px
+    style GC2 fill:#fbb,stroke:#333,stroke-width:2px

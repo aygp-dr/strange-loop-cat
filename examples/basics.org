@@ -26,7 +26,7 @@ Let's explore these concepts interactively using Guile Scheme.
 First, let's load our category theory module:
 
 #+NAME: module-loading
-#+begin_src scheme :tangle "../src/generated/basics-module.scm"
+#+begin_src scheme :tangle ../src/generated/basics-module.scm :mkdirp yes
 (add-to-load-path "../src/guile")
 (use-modules (category))
 
@@ -99,7 +99,7 @@ One of the key operations in a category is composition of morphisms:
 
 Every object in a category has an identity morphism:
 
-#+begin_src scheme
+#+begin_src scheme :tangle ../src/generated/demo/basics.scm :mkdirp yes
 ;; Create identity morphisms
 (define id-a (identity a))
 (define id-b (identity b))
@@ -115,7 +115,7 @@ Every object in a category has an identity morphism:
 
 Let's visualize our simple category using a Mermaid diagram:
 
-#+begin_src mermaid :file ../images/diagrams/simple-category.mmd
+#+begin_src mermaid :file ../images/diagrams/simple-category.png :tangle ../docs/diagrams/simple-category.mmd :mkdirp yes
 graph LR
     A((A)) --> |f| B((B))
     B((B)) --> |g| C((C))
@@ -124,6 +124,9 @@ graph LR
     B((B)) --> |"id_B"| B((B))
     C((C)) --> |"id_C"| C((C))
 #+end_src
+
+#+RESULTS:
+[[file:../images/diagrams/simple-category.png]]
 
 ** Set: A Fundamental Category
 
@@ -135,7 +138,7 @@ The category *Set* is one of the most fundamental categories:
 
 Let's implement a simple example of the category Set:
 
-#+begin_src scheme
+#+begin_src scheme :tangle ../src/generated/demo/basics.scm
 ;; Define some sets (as lists for simplicity)
 (define set-a '(1 2 3))
 (define set-b '("a" "b"))
@@ -173,9 +176,11 @@ Let's implement a simple example of the category Set:
 
 ** Isomorphisms
 
-An isomorphism in a category is a morphism f: A → B for which there exists a morphism g: B → A such that g ∘ f = id_A and f ∘ g = id_B.
+An isomorphism in a category is a morphism 
+f: A → B for which there exists a morphism 
+g: B → A such that g ∘ f = id_A and f ∘ g = id_B.
 
-#+begin_src scheme
+#+begin_src scheme :tangle ../src/generated/demo/basics.scm
 ;; Create objects
 (define x (make-object "X"))
 (define y (make-object "Y"))
@@ -204,12 +209,15 @@ An isomorphism in a category is a morphism f: A → B for which there exists a m
 
 ** Monomorphisms and Epimorphisms
 
-- A monomorphism (monic) is a morphism f such that for all morphisms g₁, g₂: if f ∘ g₁ = f ∘ g₂, then g₁ = g₂
-- An epimorphism (epic) is a morphism f such that for all morphisms g₁, g₂: if g₁ ∘ f = g₂ ∘ f, then g₁ = g₂
+- A monomorphism (monic) is a morphism f such that for all morphisms
+  g₁, g₂: if f ∘ g₁ = f ∘ g₂, then g₁ = g₂
+
+- An epimorphism (epic) is a morphism f such that for all morphisms
+  g₁, g₂: if g₁ ∘ f = g₂ ∘ f, then g₁ = g₂
 
 Let's visualize these concepts:
 
-#+begin_src mermaid :file ../images/diagrams/mono-epi.mmd
+#+begin_src mermaid :file ../images/diagrams/mono-epi.png :tangle ../docs/diagrams/mono-epi.mmd
 graph TD
     subgraph "Monomorphism"
     X1((X)) --> |g₁| A1((A))
@@ -232,7 +240,7 @@ A "strange loop" is a phenomenon where moving through a hierarchical system brin
 
 Let's visualize a simple strange loop:
 
-#+begin_src mermaid :file ../images/diagrams/strange-loop.mmd
+#+begin_src mermaid :file ../images/diagrams/strange-loop.png :tangle ../docs/diagrams/strange-loop.mmd
 graph TD
     A((A)) --> |f| B((B))
     B --> |g| C((C))
@@ -245,11 +253,16 @@ graph TD
 
 ** Connection to Gödel's Incompleteness Theorem
 
-Gödel's famous theorem uses self-reference to show that in any consistent formal system strong enough to express basic arithmetic, there are statements that cannot be proven or disproven within the system.
+Gödel's famous theorem uses self-reference to show that in any
+consistent formal system strong enough to express basic arithmetic,
+there are statements that cannot be proven or disproven within the
+system.
 
-This is similar to the concept of initial and terminal objects in categories, where certain structures cannot be "reached" from within the system itself.
+This is similar to the concept of initial and terminal objects in
+categories, where certain structures cannot be "reached" from within
+the system itself.
 
-#+begin_src mermaid :file ../images/diagrams/godel-reference.mmd
+#+begin_src mermaid :file ../images/diagrams/godel-reference.png :tangle ../docs/diagrams/godel-reference.mmd
 graph TD
     A((Formal System)) --> |"Contains"| B((Statements))
     B --> |"Some refer to"| A
@@ -261,7 +274,8 @@ graph TD
 
 * Complete Example
 
-Let's put everything together in a complete example that demonstrates tangling:
+Let's put everything together in a complete example that demonstrates
+tangling:
 
 #+NAME: complete-category-example
 #+begin_src scheme :tangle "../src/generated/complete-basics.scm" :noweb yes
@@ -315,8 +329,8 @@ Let's put everything together in a complete example that demonstrates tangling:
 (display "\nCOMPOSITIONS:\n")
 (display "g ∘ f: ") (display g-after-f) (newline)
 (display "f ∘ g: ") (display f-after-g) (newline)
-(display "g-yx ∘ f-xy: ") (display f-after-g) (newline)
-(display "f-xy ∘ g-yx: ") (display g-after-f) (newline)
+(display "f-xy ∘ g-yx: ") (display f-after-g) (newline)
+(display "g-yx ∘ f-xy: ") (display g-after-f) (newline)
 
 ;; Create a category
 (define simple-cat 
@@ -330,29 +344,231 @@ Let's put everything together in a complete example that demonstrates tangling:
 
 * Exercises
 
-1. Create a category with four objects and morphisms that form a "square" with compositions along the diagonals.
+1. Create a category with four objects and morphisms that form a
+   "square" with compositions along the diagonals.
 
 2. Implement a simple functor between two small categories.
 
-3. Find an example of a strange loop in everyday life and try to model it using categorical concepts.
+3. Find an example of a strange loop in everyday life and try to model
+   it using categorical concepts.
 
-4. Think about how self-reference in programming (recursive functions) relates to categorical concepts.
+4. Think about how self-reference in programming (recursive functions)
+   relates to categorical concepts.
 
-* Tangling Instructions
+* Exercise Workspace
 
-To tangle this org file and generate the Scheme source files:
+This section provides a dedicated space to work on the exercises. You can modify the code blocks below, execute them in Emacs, and when you're satisfied with your solutions, you can tangle them back to the appropriate files.
 
-1. In Emacs, open this file
-2. Use the command: M-x org-babel-tangle
-3. Generated files will be created in the ../src/generated/ directory:
-   - basics-module.scm
-   - basics-category.scm  
-   - basics-composition.scm
-   - complete-basics.scm
+** Exercise 1 Workspace - Square Category
 
-To run any of the generated files:
+#+NAME: square-category
+#+begin_src scheme :tangle "../src/generated/exercises/basics-ex1-square.scm" :mkdirp yes
+;; First include the module loading code
+(add-to-load-path "../src/guile")
+(use-modules (category))
 
-```shell
-cd ../src/generated
-guile complete-basics.scm
-```
+;; Define square category objects
+(define a (make-object "A"))
+(define b (make-object "B"))
+(define c (make-object "C"))
+(define d (make-object "D"))
+
+;; Create morphisms for the square
+(define f-ab (make-morphism "f_AB" a b))
+(define f-bc (make-morphism "f_BC" b c))
+(define f-cd (make-morphism "f_CD" c d))
+(define f-da (make-morphism "f_DA" d a))
+
+;; Create diagonal morphisms
+(define f-ac (make-morphism "f_AC" a c))
+(define f-bd (make-morphism "f_BD" b d))
+
+;; Create compositions
+(define f-ab-bc (compose f-ab f-bc))  ;; Should be equivalent to f-ac
+(define f-bc-cd (compose f-bc f-cd))  ;; Should be equivalent to f-bd
+(define f-cd-da (compose f-cd f-da))  ;; Should be equivalent to a loop
+(define f-da-ab (compose f-da f-ab))  ;; Should be equivalent to a loop
+
+;; Create a category
+(define square-cat 
+  (make-category "SquareCategory" 
+                 (list a b c d) 
+                 (list f-ab f-bc f-cd f-da f-ac f-bd)))
+
+;; Display the category and compositions
+(display "SQUARE CATEGORY:\n")
+(display square-cat) (newline)
+
+(display "\nCOMPOSITIONS:\n")
+(display "f_BC ∘ f_AB: ") (display f-ab-bc) (newline)
+(display "f_CD ∘ f_BC: ") (display f-bc-cd) (newline)
+(display "f_DA ∘ f_CD: ") (display f-cd-da) (newline)
+(display "f_AB ∘ f_DA: ") (display f-da-ab) (newline)
+#+end_src
+
+** Exercise 2 Workspace - Simple Functor
+
+#+NAME: simple-functor
+#+begin_src scheme :tangle "../src/generated/exercises/basics-ex2-functor.scm" :mkdirp yes
+;; First include the module loading code
+(add-to-load-path "../src/guile")
+(use-modules (category))
+
+;; Create the source category (a simple linear category)
+(define s-a (make-object "S_A"))
+(define s-b (make-object "S_B"))
+(define s-mor (make-morphism "s_mor" s-a s-b))
+(define s-id-a (identity s-a))
+(define s-id-b (identity s-b))
+(define source-cat (make-category "Source" (list s-a s-b) (list s-mor s-id-a s-id-b)))
+
+;; Create the target category (a product category)
+(define t-a (make-object "T_A"))
+(define t-b (make-object "T_B"))
+(define t-c (make-object "T_C"))
+(define t-mor1 (make-morphism "t_mor1" t-a t-b))
+(define t-mor2 (make-morphism "t_mor2" t-b t-c))
+(define t-id-a (identity t-a))
+(define t-id-b (identity t-b))
+(define t-id-c (identity t-c))
+(define target-cat (make-category "Target" 
+                                 (list t-a t-b t-c) 
+                                 (list t-mor1 t-mor2 t-id-a t-id-b t-id-c)))
+
+;; Define the functor mapping objects
+(define (functor-obj obj)
+  (cond ((equal? obj s-a) t-a)
+        ((equal? obj s-b) t-c)
+        (else (error "Object not in source category"))))
+
+;; Define the functor mapping morphisms
+(define (functor-mor mor)
+  (let ((name (cadr mor))
+        (domain (caddr mor))
+        (codomain (cadddr mor)))
+    (cond ((equal? name "s_mor") 
+           (compose t-mor1 t-mor2))  ;; Map s_mor to composite t_mor2 ∘ t_mor1
+          ((equal? name "id_S_A") t-id-a)
+          ((equal? name "id_S_B") t-id-c)
+          (else (error "Morphism not in source category")))))
+
+;; Test the functor
+(display "SOURCE CATEGORY:\n")
+(display source-cat) (newline)
+
+(display "\nTARGET CATEGORY:\n")
+(display target-cat) (newline)
+
+(display "\nFUNCTOR MAPPING:\n")
+(display "F(S_A) = ") (display (functor-obj s-a)) (newline)
+(display "F(S_B) = ") (display (functor-obj s-b)) (newline)
+(display "F(s_mor) = ") (display (functor-mor s-mor)) (newline)
+(display "F(id_S_A) = ") (display (functor-mor s-id-a)) (newline)
+#+end_src
+
+** Exercise 3 Workspace - Strange Loop Example
+
+#+NAME: strange-loop-example
+#+begin_src scheme :tangle "../src/generated/exercises/basics-ex3-strange-loop.scm" :mkdirp yes
+;; A real-world example of a strange loop: a thermostat system
+;; - Thermostat senses room temperature
+;; - Thermostat compares to desired temperature
+;; - Thermostat controls heater
+;; - Heater changes room temperature
+;; - Room temperature is sensed by thermostat (loop back to start)
+
+(define (make-thermostat-system)
+  (let ((room-temp 65)
+        (desired-temp 70)
+        (heater-on #f))
+    
+    ;; Define the state transformation
+    (define (next-state)
+      (set! heater-on (< room-temp desired-temp))
+      (if heater-on
+          (set! room-temp (+ room-temp 1))
+          (set! room-temp (- room-temp 0.5)))
+      (list room-temp desired-temp heater-on))
+    
+    ;; Return functions to interact with the system
+    (list
+     (lambda () (list room-temp desired-temp heater-on))  ; get-state
+     (lambda (new-temp) (set! desired-temp new-temp))     ; set-desired-temp
+     next-state)))                                        ; advance-system
+
+;; Create a thermostat system
+(define system (make-thermostat-system))
+(define get-state (car system))
+(define set-desired-temp (cadr system))
+(define advance-system (caddr system))
+
+;; Simulate the system for a few steps
+(display "Initial state: ") (display (get-state)) (newline)
+
+(display "Advancing system...\n")
+(dotimes (i 10)
+  (display "Step ") (display i) (display ": ")
+  (display (advance-system))
+  (newline))
+
+;; Change desired temperature and observe system response
+(display "\nChanging desired temperature to 65 degrees\n")
+(set-desired-temp 65)
+
+(display "Advancing system with new target...\n")
+(dotimes (i 10)
+  (display "Step ") (display i) (display ": ")
+  (display (advance-system))
+  (newline))
+#+end_src
+
+** Exercise 4 Workspace - Self-Reference in Programming
+
+#+NAME: self-reference-programming
+#+begin_src scheme :tangle "../src/generated/exercises/basics-ex4-self-reference.scm" :mkdirp yes
+;; Examples of self-reference in programming and their categorical interpretation
+
+;; 1. Y combinator - the classic example of self-reference
+(define (Y f)
+  ((lambda (x) (f (lambda (y) ((x x) y))))
+   (lambda (x) (f (lambda (y) ((x x) y))))))
+
+;; Using the Y combinator to implement factorial
+(define factorial
+  (Y (lambda (f)
+       (lambda (n)
+         (if (= n 0)
+             1
+             (* n (f (- n 1))))))))
+
+(display "Factorial of 5 using Y combinator: ")
+(display (factorial 5))
+(newline)
+
+;; 2. Self-application - another form of self-reference
+(define (self-apply f)
+  (f f))
+
+(display "Self-application example: ")
+(display (self-apply (lambda (x) (if (procedure? x) "procedure" "not procedure"))))
+(newline)
+
+;; 3. Quines - programs that produce their own source code
+;; A simple quine in Scheme
+(define quine
+  '((lambda (x) (list x (list (quote quote) x)))
+    (quote (lambda (x) (list x (list (quote quote) x))))))
+
+(display "Quine example: ")
+(display quine)
+(newline)
+(display "Evaluating quine: ")
+(display (eval quine (interaction-environment)))
+(newline)
+
+;; Categorical interpretation:
+;; - Y combinator as a fixed point finder corresponds to finding a fixed point of an endofunctor
+;; - Self-application corresponds to a morphism from Hom(A,B) to itself
+;; - Quines correspond to a natural transformation from the identity functor to self
+#+end_src
+

@@ -1,0 +1,10 @@
+graph LR
+    subgraph "Category C"
+    A((A)) --> |f| B((B))
+    A -.-> |F| FA((F(A)))
+    B -.-> |F| FB((F(B)))
+    FA --> |F(f)| FB
+    end
+    
+    style FA fill:#bbf,stroke:#333,stroke-width:2px
+    style FB fill:#bbf,stroke:#333,stroke-width:2px

@@ -54,8 +54,8 @@
 (display "\nCOMPOSITIONS:\n")
 (display "g ∘ f: ") (display g-after-f) (newline)
 (display "f ∘ g: ") (display f-after-g) (newline)
-(display "g-yx ∘ f-xy: ") (display f-after-g) (newline)
-(display "f-xy ∘ g-yx: ") (display g-after-f) (newline)
+(display "f-xy ∘ g-yx: ") (display f-after-g) (newline)
+(display "g-yx ∘ f-xy: ") (display g-after-f) (newline)
 
 ;; Create a category
 (define simple-cat 

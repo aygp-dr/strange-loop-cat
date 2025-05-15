@@ -499,6 +499,417 @@ Let's implement a recursive operation using monads to illustrate this connection
 
 5. Investigate how the continuation monad relates to recursive structures and self-reference.
 
+* Exercise Workspace
+
+This section provides a dedicated space to work on the exercises. You can modify the code blocks below, execute them in Emacs, and when you're satisfied with your solutions, you can tangle them back to the appropriate files.
+
+** Exercise 1 Workspace - Writer Monad
+
+#+NAME: writer-monad
+#+begin_src scheme :tangle "../src/generated/exercises/monads-ex1-writer.scm" :mkdirp yes
+;; Writer Monad Implementation
+;; The Writer monad allows us to accumulate information (like logs) during computation
+
+;; First include necessary utilities and modules
+(add-to-load-path "../src/guile")
+(use-modules (ice-9 format))
+
+;; Writer monad constructor: creates a pair of value and log
+(define (writer-return value)
+  (cons value '()))
+
+;; Writer monad bind: sequences operations while accumulating logs
+(define (writer-bind m f)
+  (let* ((value (car m))
+         (log1 (cdr m))
+         (result (f value))
+         (value2 (car result))
+         (log2 (cdr result)))
+    (cons value2 (append log1 log2))))
+
+;; Helper function to add a log entry
+(define (tell message)
+  (cons #f (list message)))
+
+;; Helper function to run a writer computation
+(define (run-writer m)
+  m)
+
+;; Helper function to get the final value of a writer computation
+(define (writer-value m)
+  (car m))
+
+;; Helper function to get the logs from a writer computation
+(define (writer-logs m)
+  (cdr m))
+
+;; Helper to create a writer from a value and a log entry
+(define (writer value message)
+  (cons value (list message)))
+
+;; Example: Factorial with logging
+(define (factorial-with-logging n)
+  (let loop ((n n)
+             (result (writer 1 (format #f "Starting factorial calculation for ~a" n))))
+    (if (<= n 1)
+        (writer-bind result 
+                    (lambda (r) 
+                      (writer r (format #f "Finished factorial calculation with result ~a" r))))
+        (writer-bind result
+                    (lambda (r)
+                      (let ((new-result (* r n)))
+                        (writer new-result 
+                                (format #f "Multiplied by ~a to get ~a" n new-result))))
+                    loop (- n 1)))))
+
+;; Test the Writer monad
+(define result (factorial-with-logging 5))
+(display "Final value: ") (display (writer-value result)) (newline)
+(display "Logs:\n")
+(for-each (lambda (log) (display "- ") (display log) (newline))
+          (writer-logs result))
+#+end_src
+
+** Exercise 2 Workspace - Maybe Monad for Factorial
+
+#+NAME: maybe-factorial
+#+begin_src scheme :tangle "../src/generated/exercises/monads-ex2-maybe.scm" :mkdirp yes
+;; Maybe monad implementation for handling possible failures
+
+;; Maybe monad constructors
+(define (just x) (cons 'just x))
+(define (nothing) 'nothing)
+
+;; Maybe monad operations
+(define (maybe-return x) (just x))
+
+(define (maybe-bind m f)
+  (if (eq? m 'nothing)
+      'nothing
+      (f (cdr m))))
+
+;; Helper functions
+(define (maybe-value m default)
+  (if (eq? m 'nothing)
+      default
+      (cdr m)))
+
+(define (is-just? m)
+  (and (pair? m) (eq? (car m) 'just)))
+
+(define (is-nothing? m)
+  (eq? m 'nothing))
+
+;; Factorial with Maybe monad to handle invalid inputs
+(define (safe-factorial n)
+  ;; First check if n is a valid input
+  (if (or (not (integer? n)) (< n 0))
+      (nothing)  ;; Return nothing for invalid inputs
+      (let loop ((n n) 
+                 (acc (maybe-return 1)))
+        (if (<= n 1)
+            acc
+            (maybe-bind acc
+                       (lambda (result)
+                         (maybe-return (* result n))))
+            (loop (- n 1))))))
+
+;; Test cases
+(display "Factorial with Maybe monad:\n")
+
+(define valid-result (safe-factorial 5))
+(display "safe-factorial 5: ")
+(if (is-just? valid-result)
+    (display (maybe-value valid-result 'error))
+    (display "Error: Invalid input"))
+(newline)
+
+(define negative-result (safe-factorial -3))
+(display "safe-factorial -3: ")
+(if (is-just? negative-result)
+    (display (maybe-value negative-result 'error))
+    (display "Error: Invalid input"))
+(newline)
+
+(define non-integer-result (safe-factorial 3.5))
+(display "safe-factorial 3.5: ")
+(if (is-just? non-integer-result)
+    (display (maybe-value non-integer-result 'error))
+    (display "Error: Invalid input"))
+(newline)
+#+end_src
+
+** Exercise 3 Workspace - Proving Monad Laws for Maybe
+
+#+NAME: maybe-monad-laws
+#+begin_src scheme :tangle "../src/generated/exercises/monads-ex3-laws.scm" :mkdirp yes
+;; Proving the monad laws for the Maybe monad
+
+;; First, let's reimplement the Maybe monad
+(define (just x) (cons 'just x))
+(define (nothing) 'nothing)
+
+;; The return operation (unit)
+(define (maybe-return x) (just x))
+
+;; The bind operation (>>=)
+(define (maybe-bind m f)
+  (if (eq? m 'nothing)
+      'nothing
+      (f (cdr m))))
+
+;; Helper function to check equality
+(define (maybe-equal? m1 m2)
+  (or (and (eq? m1 'nothing) (eq? m2 'nothing))
+      (and (pair? m1) (pair? m2) 
+           (eq? (car m1) 'just) (eq? (car m2) 'just)
+           (equal? (cdr m1) (cdr m2)))))
+
+;; Test functions for our proofs
+(define (double x) (maybe-return (* x 2)))
+(define (square x) (maybe-return (* x x)))
+(define (inc x) (maybe-return (+ x 1)))
+
+;; Let's verify the three monad laws:
+
+;; 1. Left identity: return a >>= f ≡ f a
+(display "Testing left identity law:\n")
+
+(define test-value 42)
+(define left-id-left (maybe-bind (maybe-return test-value) double))
+(define left-id-right (double test-value))
+
+(display "Left side:  ") (display left-id-left) (newline)
+(display "Right side: ") (display left-id-right) (newline)
+(display "Equal? ") (display (maybe-equal? left-id-left left-id-right)) (newline)
+
+;; 2. Right identity: m >>= return ≡ m
+(display "\nTesting right identity law:\n")
+
+(define test-monad (just 42))
+(define right-id-left (maybe-bind test-monad maybe-return))
+(define right-id-right test-monad)
+
+(display "Left side:  ") (display right-id-left) (newline)
+(display "Right side: ") (display right-id-right) (newline)
+(display "Equal? ") (display (maybe-equal? right-id-left right-id-right)) (newline)
+
+;; Also test with nothing
+(display "\nTesting right identity with nothing:\n")
+(define test-monad-nothing (nothing))
+(define right-id-left-nothing (maybe-bind test-monad-nothing maybe-return))
+(define right-id-right-nothing test-monad-nothing)
+
+(display "Left side:  ") (display right-id-left-nothing) (newline)
+(display "Right side: ") (display right-id-right-nothing) (newline)
+(display "Equal? ") (display (maybe-equal? right-id-left-nothing right-id-right-nothing)) (newline)
+
+;; 3. Associativity: (m >>= f) >>= g ≡ m >>= (λx. f x >>= g)
+(display "\nTesting associativity law:\n")
+
+(define test-monad-assoc (just 10))
+(define assoc-left (maybe-bind (maybe-bind test-monad-assoc double) square))
+(define assoc-right (maybe-bind test-monad-assoc 
+                               (lambda (x) 
+                                 (maybe-bind (double x) square))))
+
+(display "Left side:  ") (display assoc-left) (newline)
+(display "Right side: ") (display assoc-right) (newline)
+(display "Equal? ") (display (maybe-equal? assoc-left assoc-right)) (newline)
+
+;; Also test associativity with nothing
+(display "\nTesting associativity with nothing:\n")
+(define test-monad-assoc-nothing (nothing))
+(define assoc-left-nothing (maybe-bind (maybe-bind test-monad-assoc-nothing double) square))
+(define assoc-right-nothing (maybe-bind test-monad-assoc-nothing
+                                       (lambda (x)
+                                         (maybe-bind (double x) square))))
+
+(display "Left side:  ") (display assoc-left-nothing) (newline)
+(display "Right side: ") (display assoc-right-nothing) (newline)
+(display "Equal? ") (display (maybe-equal? assoc-left-nothing assoc-right-nothing)) (newline)
+
+(display "\nConclusion: All three monad laws are satisfied for the Maybe monad.\n")
+#+end_src
+
+** Exercise 4 Workspace - Strange Loop Monad
+
+#+NAME: strange-loop-monad
+#+begin_src scheme :tangle "../src/generated/exercises/monads-ex4-strange-loop.scm" :mkdirp yes
+;; Implementing a monad that represents self-reference and strange loops
+;; Inspired by Hofstadter's MU puzzle and Q-sequence
+
+;; The Q-sequence monad will model a sequence where the next term depends on previous terms
+;; Q(1) = 1
+;; Q(n) = Q(Q(n-1)) + Q(n-Q(n-1)) for n > 1
+
+;; First, let's define a structure to hold our Q-sequence state
+(define (make-q-state current-index memoized-values)
+  (list 'q-state current-index memoized-values))
+
+(define (q-state-index state) (cadr state))
+(define (q-state-memo state) (caddr state))
+
+;; Q-sequence monad return operation
+(define (q-return value)
+  (make-q-state 1 (list (cons 1 value))))
+
+;; Q-sequence monad bind operation
+(define (q-bind m f)
+  (let* ((index (q-state-index m))
+         (memo (q-state-memo m))
+         (value (cdr (assoc index memo)))
+         (result (f value))
+         (new-index (q-state-index result))
+         (new-memo (q-state-memo result)))
+    (make-q-state new-index new-memo)))
+
+;; Function to compute the next Q number
+(define (q-next state)
+  (let* ((n (+ (q-state-index state) 1))
+         (memo (q-state-memo state))
+         (q-n-1 (cdr (assoc (- n 1) memo)))
+         (q-q-n-1 (if (assoc q-n-1 memo)
+                      (cdr (assoc q-n-1 memo))
+                      1))  ;; Default to 1 if not found
+         (n-q-n-1 (- n q-n-1))
+         (q-n-q-n-1 (if (assoc n-q-n-1 memo)
+                        (cdr (assoc n-q-n-1 memo))
+                        1))  ;; Default to 1 if not found
+         (q-n (+ q-q-n-1 q-n-q-n-1))
+         (new-memo (cons (cons n q-n) memo)))
+    (make-q-state n new-memo)))
+
+;; Function to compute Q sequence up to n
+(define (q-sequence n)
+  (let loop ((i 1)
+             (state (q-return 1)))
+    (if (> i n)
+        state
+        (loop (+ i 1) (q-next state)))))
+
+;; Function to extract values from the Q-sequence state
+(define (q-values state)
+  (let ((memo (q-state-memo state)))
+    (map cdr
+         (sort (map (lambda (pair) (cons (car pair) (cdr pair))) memo)
+               (lambda (a b) (< (car a) (car b)))))))
+
+;; Calculate and display the Q-sequence
+(display "Hofstadter's Q-sequence (a strange loop sequence):\n")
+(define q-state (q-sequence 10))
+(define q-vals (q-values q-state))
+
+(do ((i 1 (+ i 1))
+     (vals q-vals (cdr vals)))
+    ((> i 10))
+  (format #t "Q(~a) = ~a\n" i (car vals)))
+
+;; Demonstrate the strange loop property: Q(n) references Q(Q(n-1))
+(display "\nDemonstrating the strange loop property:\n")
+(let* ((n 5)
+       (q-n-1 (list-ref q-vals (- n 1 - 1)))
+       (q-q-n-1 (list-ref q-vals (- q-n-1 1)))
+       (n-q-n-1 (- n q-n-1))
+       (q-n-q-n-1 (list-ref q-vals (- n-q-n-1 1)))
+       (q-n (+ q-q-n-1 q-n-q-n-1)))
+  (format #t "For n = ~a:\n" n)
+  (format #t "Q(~a) = Q(Q(~a)) + Q(~a - Q(~a))\n" n (- n 1) n (- n 1))
+  (format #t "Q(~a) = Q(~a) + Q(~a - ~a)\n" n q-n-1 n q-n-1)
+  (format #t "Q(~a) = Q(~a) + Q(~a)\n" n q-n-1 n-q-n-1)
+  (format #t "Q(~a) = ~a + ~a = ~a\n" n q-q-n-1 q-n-q-n-1 q-n))
+#+end_src
+
+** Exercise 5 Workspace - Continuation Monad
+
+#+NAME: continuation-monad
+#+begin_src scheme :tangle "../src/generated/exercises/monads-ex5-continuation.scm" :mkdirp yes
+;; Implementing the Continuation Monad to explore recursion and self-reference
+
+;; Continuation monad constructor (unit/return)
+(define (cont-return x)
+  (lambda (k) (k x)))
+
+;; Continuation monad bind
+(define (cont-bind m f)
+  (lambda (k)
+    (m (lambda (v) ((f v) k)))))
+
+;; Run a continuation computation with an initial continuation
+(define (run-cont m)
+  (m (lambda (x) x)))
+
+;; Helper to call/cc in our continuation monad
+(define (call-cc/m f)
+  (lambda (k)
+    (let ((cc (lambda (x)
+                (lambda (_) (k x)))))
+      ((f cc) k))))
+
+;; A recursive factorial function using the continuation monad
+(define (factorial-cont n)
+  (if (<= n 1)
+      (cont-return 1)
+      (cont-bind (factorial-cont (- n 1))
+                (lambda (result)
+                  (cont-return (* n result))))))
+
+;; Another example: fixed point calculation using continuations
+(define (fixed-point-cont f start)
+  (define tolerance 0.00001)
+  
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2)) tolerance))
+  
+  (define (iterate guess)
+    (cont-bind (cont-return (f guess))
+               (lambda (next)
+                 (if (close-enough? guess next)
+                     (cont-return next)
+                     (iterate next)))))
+  
+  (iterate start))
+
+;; Test the factorial function
+(display "Factorial using continuation monad:\n")
+(display "5! = ")
+(display (run-cont (factorial-cont 5)))
+(newline)
+
+;; Use cont monad for fixed point calculation
+(display "\nFixed point of cos(x) using continuation monad:\n")
+(display (run-cont (fixed-point-cont cos 1.0)))
+(newline)
+
+;; Demonstrate call/cc with a simple example
+(define (example-with-cc)
+  (cont-bind (call-cc/m 
+              (lambda (escape)
+                (cont-bind (cont-return 1)
+                          (lambda (x)
+                            (cont-bind (cont-return 2)
+                                      (lambda (y)
+                                        (cont-bind ((escape 100))
+                                                  (lambda (z)
+                                                    (cont-return 
+                                                     (+ x y z))))))))))
+             (lambda (result)
+               (cont-return result))))
+
+(display "\nDemonstrating call/cc with the continuation monad:\n")
+(display "Result with escape: ")
+(display (run-cont (example-with-cc)))
+(newline)
+
+;; Explain the connection to strange loops
+(display "\nConnection to Strange Loops:\n")
+(display "The continuation monad captures 'the rest of the computation' as a first-class\n")
+(display "value that can be manipulated. This creates potential for strange loops when\n")
+(display "we use call/cc to capture a continuation and then invoke it multiple times or\n")
+(display "in unexpected contexts, creating a cyclical flow of control where 'the future'\n")
+(display "can influence 'the past'.\n")
+#+end_src
+
 * Tangling Instructions
 
 To tangle this org file and generate the Scheme source files:
