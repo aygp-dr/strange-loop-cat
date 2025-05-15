@@ -13,6 +13,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Run all build processes: `make all`
 - Run a generated Scheme file: `guile src/generated/file-name.scm`
 - Tangle a specific org file: `make tangle-file FILE=examples/filename.org`
+- Convert Markdown guides to Org Mode: `make md2org`
 - Check Guile version: `guile --version` (Guile 3.x is used in this project)
 
 ## Code Style Guidelines
@@ -61,6 +62,7 @@ This project explores category theory concepts through interactive Org-mode note
 3. Run `make mermaid` to generate diagrams
 4. Run `make test` to verify implementations
 5. Run `make docs` to generate HTML documentation
+6. Use `make md2org` to convert Markdown guides from docs/guides/ to Org format in examples/
 
 ### Key Concepts
 - Categories, objects, and morphisms (implemented in category.scm)
@@ -75,6 +77,8 @@ This project explores category theory concepts through interactive Org-mode note
 - The core category theory implementation is in src/guile/category.scm
 - Exercise solutions should be placed in src/generated/exercises/
 - Diagrams are defined using Mermaid and should be placed in docs/diagrams/
+- Markdown guides in docs/guides/ can be converted to Org Mode using `make md2org`
+- The comprehensive guides cover various aspects of category theory and are converted from Markdown to Org format
 - For developing new features, follow the existing pattern of:
   1. Add explanatory content in an org file
   2. Implement code in Scheme code blocks with proper tangle directives
