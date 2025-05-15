@@ -1,11 +1,5 @@
 ;; Emacs Lisp script to tangle code blocks from an org file
-(require 'org)
-
-;; Auto-create directories without prompting
-(setq org-babel-tangle-create-missing-dirs-and-files t)
-
-;; Don't ask for confirmation
-(setq org-confirm-babel-evaluate nil)
+;; Common tangling settings are now in scripts/tangle-config.el
 
 ;; Set default tangle directory
 (setq org-babel-default-header-args

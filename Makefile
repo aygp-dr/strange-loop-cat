@@ -60,28 +60,17 @@ scheme-test:
 
 # Tangle org files into Scheme files
 tangle: build
-	$(EMACS) --batch --eval "(require 'org)" \
-		--eval "(setq org-confirm-babel-evaluate nil)" \
-		--eval "(setq org-babel-tangle-create-missing-dirs-and-files t)" \
-		-l tangle-babel.el
-	@echo "Also tangling guide files..."
-	@for file in $(GUIDE_FILES); do \
-		echo "Tangling $$file"; \
-		$(EMACS) --batch --eval "(require 'org)" \
-			--eval "(setq org-confirm-babel-evaluate nil)" \
-			--eval "(setq org-babel-tangle-create-missing-dirs-and-files t)" \
-			--eval "(org-babel-tangle-file \"$$file\")"; \
-	done
+	@echo "Tangling core org files..."
+	$(EMACS) --batch -l scripts/tangle-config.el -l tangle-babel.el
+	@echo "Tangling guide files..."
+	$(EMACS) --batch -l scripts/tangle-config.el --eval "(tangle-files '($(foreach file,$(GUIDE_FILES),\"$(file)\" )))"
 
 # Tangle a specific org file
 tangle-file:
 	@if [ -z "$(FILE)" ]; then \
 		echo "Usage: make tangle-file FILE=examples/filename.org"; \
 	else \
-		$(EMACS) --batch --eval "(require 'org)" \
-			--eval "(setq org-confirm-babel-evaluate nil)" \
-			--eval "(setq org-babel-tangle-create-missing-dirs-and-files t)" \
-			--eval '(org-babel-tangle-file "$(FILE)")'; \
+		$(EMACS) --batch -l scripts/tangle-config.el --eval '(tangle-file "$(FILE)")'; \
 	fi
 
 # Convert Markdown guides to Org Mode
