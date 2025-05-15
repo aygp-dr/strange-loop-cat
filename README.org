@@ -74,20 +74,22 @@ files.
 - Douglas Hofstadter's "Gödel, Escher, Bach: An Eternal Golden Braid"
 - [[file:docs/guides/category-theory-interviews.org][Category Theory for Interviews: Core Concepts with GEB-Style Metaphors]]
 
-** Available Commands
+** Essential Commands
 
-This project uses Make for most operations. Here are the available commands:
+This project uses Make to simplify working with the code and documentation. Here are the essential commands:
 
-| Command        | Description                                       |
-|----------------+---------------------------------------------------|
-| ~make init~    | Initialize the project, creating directories and  |
-|                | installing dependencies                           |
-| ~make mermaid~ | Generate diagrams from Mermaid definitions        |
-| ~make tangle~  | Generate Scheme source files from org file blocks |
-| ~make test~    | Run tests for the category theory implementation  |
-| ~make docs~    | Generate HTML documentation from org files        |
-| ~make clean~   | Remove generated files                            |
-| ~make all~     | Generate diagrams and documentation               |
+| Command               | Description                                          |
+|-----------------------+------------------------------------------------------|
+| ~make init~           | Set up the project (run this first!)                 |
+| ~make tangle~         | Generate all Scheme source files from org notebooks  |
+| ~make tangle-file FILE=path~ | Generate code from a specific org notebook    |
+| ~make mermaid~        | Generate diagrams from Mermaid definitions           |
+| ~make test~           | Run tests for the category theory implementation     |
+| ~make clean~          | Remove generated files and start fresh               |
+
+For Emacs users, you can also:
+- Open any ~.org~ file directly and use ~C-c C-c~ to execute code blocks
+- Use ~C-c C-v t~ (org-babel-tangle) to generate source files from the current notebook
 
 ** GEB Connection and Self-Reference
 
