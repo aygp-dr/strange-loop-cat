@@ -21,7 +21,7 @@ perspective on self-reference, strange loops, and formal systems.
 ** Loading Required Modules
 
 #+NAME: module-loading
-#+begin_src guile :tangle ../src/generated/geb-systems.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/geb-systems.scm :mkdirp yes
 (use-modules (ice-9 format)
              (srfi srfi-1)
              (srfi srfi-9)
@@ -45,7 +45,7 @@ starting with the axiom MI. It has four rules of inference:
 The question posed by Hofstadter: Can you derive MU from MI using these rules?
 
 #+NAME: miu-system
-#+begin_src guile :tangle ../src/generated/miu-system.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/miu-system.scm :mkdirp yes
 ;; MIU formal system from GEB
 (define (miu-rule1 str)
   (if (string=? (string-take-right str 1) "I")
@@ -108,7 +108,7 @@ TNT is a formal system for expressing elementary number theory, introduced in GE
 Gödel's Incompleteness Theorem. It includes variables, constants, operators, and logical symbols.
 
 #+NAME: tnt-system
-#+begin_src guile :tangle ../src/generated/tnt-system.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/tnt-system.scm :mkdirp yes
 ;; TNT symbols and operations
 (define-record-type <tnt-term>
   (make-tnt-term type value args)
@@ -214,7 +214,7 @@ Gödel's breakthrough was encoding statements about formal systems within the sy
 This section implements Gödel numbering and demonstrates how a system can talk about itself.
 
 #+NAME: godel-numbering
-#+begin_src guile :tangle ../src/generated/godel-numbering.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/godel-numbering.scm :mkdirp yes
 ;; Create Gödel numbering for TNT
 (define (tnt-godel-encode term)
   (define symbol-codes
@@ -268,7 +268,7 @@ GEB introduces several self-referential sequences that exhibit fascinating prope
 ** The Q-Sequence
 
 #+NAME: hofstadter-q
-#+begin_src guile :tangle ../src/generated/hofstadter-q.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/hofstadter-q.scm :mkdirp yes
 ;; Hofstadter's Q-sequence: Q(n) = Q(n-Q(n-1)) + Q(n-Q(n-2)) for n>2
 (define (hofstadter-q n)
   (if (<= n 2)
@@ -300,7 +300,7 @@ GEB introduces several self-referential sequences that exhibit fascinating prope
 ** The G-Sequence
 
 #+NAME: hofstadter-g
-#+begin_src guile :tangle ../src/generated/hofstadter-g.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/hofstadter-g.scm :mkdirp yes
 ;; Hofstadter's G-sequence: G(n) = n - G(G(n-1))
 (define g-memo (make-hash-table))
 
@@ -323,7 +323,7 @@ GEB introduces several self-referential sequences that exhibit fascinating prope
 ** The H-Sequence
 
 #+NAME: hofstadter-h
-#+begin_src guile :tangle ../src/generated/hofstadter-h.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/hofstadter-h.scm :mkdirp yes
 ;; Hofstadter's H-sequence: H(n) = n - H(H(H(n-1)))
 (define h-memo (make-hash-table))
 
@@ -349,7 +349,7 @@ GEB's dialogues between Achilles and the Tortoise illustrate many concepts throu
 Here we implement a meta-structure for creating GEB-style dialogues.
 
 #+NAME: geb-dialogues
-#+begin_src guile :tangle ../src/generated/geb-dialogues.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/geb-dialogues.scm :mkdirp yes
 ;; GEB Dialogue structure implemented in Scheme
 (define-record-type <character>
   (make-character name personality)
@@ -411,7 +411,7 @@ Bach's music demonstrates transformations that create self-reference and strange
 This section implements musical transformations mentioned in GEB.
 
 #+NAME: musical-transformations
-#+begin_src guile :tangle ../src/generated/musical-transformations.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/musical-transformations.scm :mkdirp yes
 ;; Define musical notes as integers (C=0, C#=1, ... B=11)
 (define-record-type <musical-phrase>
   (make-musical-phrase notes durations)
@@ -481,7 +481,7 @@ This section implements musical transformations mentioned in GEB.
 This example demonstrates a program that modifies its own definition - a direct parallel to GEB's self-reference.
 
 #+NAME: self-modifying-function
-#+begin_src guile :tangle ../src/generated/self-modifying-function.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/self-modifying-function.scm :mkdirp yes
 ;; Self-modifying function: A strange loop that changes its own definition
 (define (make-self-modifying-function)
   (let ((counter 0)
@@ -515,7 +515,7 @@ This example demonstrates a program that modifies its own definition - a direct 
 A quine is a program that outputs its own source code - the ultimate strange loop.
 
 #+NAME: quine
-#+begin_src guile :tangle ../src/generated/quine.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/quine.scm :mkdirp yes
 ;; A Scheme quine - the quintessential self-referential program
 (define quine
   '((lambda (x) 
@@ -546,7 +546,7 @@ A quine is a program that outputs its own source code - the ultimate strange loo
 This implements the "levels of meaning" concept from GEB with types.
 
 #+NAME: geb-levels
-#+begin_src guile :tangle ../src/generated/geb-levels.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/geb-levels.scm :mkdirp yes
 ;; GEB Levels of Meaning with Type Theory
 (define-record-type <geb-level>
   (make-geb-level name description elements operations)
@@ -641,7 +641,7 @@ This implements the "levels of meaning" concept from GEB with types.
 Implementation of monomorphisms and epimorphisms with GEB-style examples:
 
 #+NAME: monomorphisms-epimorphisms
-#+begin_src guile :tangle ../src/generated/monomorphisms-epimorphisms.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/monomorphisms-epimorphisms.scm :mkdirp yes
 ;; GEB-inspired demonstration of monomorphisms and epimorphisms through types
 (define-record-type <note>
   (make-note name octave)

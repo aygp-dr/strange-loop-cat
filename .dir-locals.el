@@ -3,5 +3,11 @@
 
 ((nil . ((fill-column . 80)))
  (org-mode . ((org-confirm-babel-evaluate . nil)
-              (org-startup-with-inline-images . t)))
- (scheme-mode . ((scheme-program-name . "guile"))))
+              (org-startup-with-inline-images . t)
+              (geiser-scheme-implementation . guile)
+              (geiser-guile-binary . "guile3")
+              (eval . (progn
+                        (add-to-list 'org-babel-load-languages '(scheme . t))
+                        (add-to-list 'org-babel-load-languages '(mermaid . t))
+                        (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)))))
+ (scheme-mode . ((scheme-program-name . "guile3"))))

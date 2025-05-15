@@ -20,7 +20,7 @@ of fixed points and strange loops.
 ** Loading Required Modules
 
 #+NAME: module-loading
-#+begin_src guile :tangle ../src/generated/modular-systems.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/modular-systems.scm :mkdirp yes
 (use-modules (ice-9 format)
              (srfi srfi-1)     ; List library
              (srfi srfi-9)     ; Record types
@@ -37,7 +37,7 @@ In the standard Western 12-tone system, each octave contains 12 semitones arrang
 ** The 12-Tone Chromatic Scale
 
 #+NAME: musical-scale-definitions
-#+begin_src guile :tangle ../src/generated/modular-music.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/modular-music.scm :mkdirp yes
 ;; Define the 12-tone chromatic scale
 (define note-names #("C" "C#" "D" "D#" "E" "F" "F#" "G" "G#" "A" "A#" "B"))
 
@@ -68,7 +68,7 @@ In the standard Western 12-tone system, each octave contains 12 semitones arrang
 Fixed points in musical transformations occur when notes remain unchanged after an operation.
 
 #+NAME: musical-transformations
-#+begin_src guile :tangle ../src/generated/modular-music.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/modular-music.scm :mkdirp yes
 ;; Define common musical intervals
 (define unison 0)
 (define semitone 1)
@@ -116,7 +116,7 @@ Fixed points in musical transformations occur when notes remain unchanged after 
 The Circle of Fifths demonstrates how repeated application of the same interval eventually returns to the starting point.
 
 #+NAME: circle-of-fifths
-#+begin_src guile :tangle ../src/generated/modular-music.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/modular-music.scm :mkdirp yes
 ;; Generate the Circle of Fifths
 (define (circle-of-fifths starting-note)
   (let loop ((current starting-note)
@@ -165,7 +165,7 @@ Compass directions form another familiar modular system with symmetries and fixe
 ** Compass Directions and Rotational Symmetry
 
 #+NAME: compass-directions
-#+begin_src guile :tangle ../src/generated/modular-directions.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/modular-directions.scm :mkdirp yes
 ;; Define compass directions
 (define directions #("North" "East" "South" "West"))
 
@@ -225,7 +225,7 @@ Clock systems demonstrate modular arithmetic with different fixed point properti
 ** 12-Hour and 24-Hour Clocks
 
 #+NAME: clock-systems
-#+begin_src guile :tangle ../src/generated/modular-clocks.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/modular-clocks.scm :mkdirp yes
 ;; Clock arithmetic operations
 (define (clock-plus-n clock-hours n)
   (modulo (+ clock-hours n) clock-hours))
@@ -286,7 +286,7 @@ Reflections in 2D space create another kind of modular system with fascinating f
 ** Mirror Operations in 2D Space
 
 #+NAME: mirror-reflections
-#+begin_src guile :tangle ../src/generated/modular-mirrors.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/modular-mirrors.scm :mkdirp yes
 ;; Define a 2D point
 (define-record-type <point>
   (make-point x y)
@@ -363,7 +363,7 @@ All these modular systems can be understood through the mathematical concept of 
 ** Understanding Dihedral Groups
 
 #+NAME: dihedral-groups
-#+begin_src guile :tangle ../src/generated/modular-dihedral.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/modular-dihedral.scm :mkdirp yes
 ;; Dihedral group operations for D_n
 (define (make-dihedral-group n)
   ;; Elements are represented as pairs (i, j) where:

@@ -1,0 +1,69 @@
+{
+  "summary": {
+    "timestamp": "2025-05-15T09:57:44.130391",
+    "total_files": 8,
+    "total_guile_blocks": 0,
+    "total_scheme_blocks": 85,
+    "total_code_blocks": 107,
+    "files_with_guile": 0,
+    "files_with_issues": 0
+  },
+  "files": [
+    {
+      "file": "examples/basics.org",
+      "guile_blocks": 0,
+      "scheme_blocks": 12,
+      "total_code_blocks": 16,
+      "missing_end_src": 0
+    },
+    {
+      "file": "examples/fixed-points-and-convergence.org",
+      "guile_blocks": 0,
+      "scheme_blocks": 9,
+      "total_code_blocks": 12,
+      "missing_end_src": 0
+    },
+    {
+      "file": "examples/functors.org",
+      "guile_blocks": 0,
+      "scheme_blocks": 13,
+      "total_code_blocks": 19,
+      "missing_end_src": 0
+    },
+    {
+      "file": "examples/geb-formal-systems.org",
+      "guile_blocks": 0,
+      "scheme_blocks": 13,
+      "total_code_blocks": 13,
+      "missing_end_src": 0
+    },
+    {
+      "file": "examples/modular-systems-and-symmetry.org",
+      "guile_blocks": 0,
+      "scheme_blocks": 8,
+      "total_code_blocks": 13,
+      "missing_end_src": 0
+    },
+    {
+      "file": "examples/monads.org",
+      "guile_blocks": 0,
+      "scheme_blocks": 12,
+      "total_code_blocks": 13,
+      "missing_end_src": 0
+    },
+    {
+      "file": "examples/strange-loops.org",
+      "guile_blocks": 0,
+      "scheme_blocks": 13,
+      "total_code_blocks": 13,
+      "missing_end_src": 0
+    },
+    {
+      "file": "examples/yoneda.org",
+      "guile_blocks": 0,
+      "scheme_blocks": 5,
+      "total_code_blocks": 8,
+      "missing_end_src": 0
+    }
+  ]
+}

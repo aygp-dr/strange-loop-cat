@@ -20,7 +20,7 @@ that relates deeply to category theory and strange loops.
 ** Loading Required Modules
 
 #+NAME: module-loading
-#+begin_src guile :tangle ../src/generated/fixed-points.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/fixed-points.scm :mkdirp yes
 (use-modules (ice-9 format)
              (srfi srfi-1)     ; List library
              (srfi srfi-26)    ; Cut/cute partial application
@@ -35,7 +35,7 @@ that relates deeply to category theory and strange loops.
 Let's define a general fixed-point finder:
 
 #+NAME: fixed-point-operator
-#+begin_src guile :tangle ../src/generated/fixed-points.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/fixed-points.scm :mkdirp yes
 ;; Continuous fixed point finder
 (define (fixed-point f initial-guess #:optional #:key
                      (tolerance 0.00001)
@@ -79,7 +79,7 @@ Let's define a general fixed-point finder:
 ** Gradient Descent with Convergence Tracking
 
 #+NAME: gradient-descent
-#+begin_src guile :tangle ../src/generated/fixed-points-gradient.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/fixed-points-gradient.scm :mkdirp yes
 ;; Gradient descent with convergence tracking
 (define (gradient-descent f gradient initial-point
                          #:optional #:key
@@ -171,7 +171,7 @@ Let's define a general fixed-point finder:
 Guile 3 supports contracts through GOOPS (Guile Object Oriented Programming System):
 
 #+NAME: convergence-contracts
-#+begin_src guile :tangle ../src/generated/fixed-points-contracts.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/fixed-points-contracts.scm :mkdirp yes
 (use-modules (oop goops)
              (ice-9 format))
 
@@ -256,7 +256,7 @@ Guile 3 supports contracts through GOOPS (Guile Object Oriented Programming Syst
 ** Implementing the Banach Fixed Point Theorem
 
 #+NAME: banach-theorem
-#+begin_src guile :tangle ../src/generated/fixed-points-banach.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/fixed-points-banach.scm :mkdirp yes
 ;; Functions for verifying and applying the Banach Fixed Point Theorem
 
 ;; Generate a sample of points from a domain
@@ -347,7 +347,7 @@ graph LR
 For a more detailed visualization, we can generate data for plotting:
 
 #+NAME: generate-plot-data
-#+begin_src guile :tangle ../src/generated/fixed-points-plots.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/fixed-points-plots.scm :mkdirp yes
 ;; Generate data for plotting fixed point iterations
 (define (generate-iteration-data f initial iterations)
   (let loop ((x initial)
@@ -377,7 +377,7 @@ For a more detailed visualization, we can generate data for plotting:
 ** Analysis of Fixed Point Existence
 
 #+NAME: fixed-point-existence
-#+begin_src guile :tangle ../src/generated/fixed-points-analysis.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/fixed-points-analysis.scm :mkdirp yes
 ;; Analyze whether a function has fixed points in a given domain
 
 (define (analyze-fixed-points f domain-min domain-max samples)
@@ -456,7 +456,7 @@ graph TD
 * The Y Combinator and Fixed Points in Recursion
 
 #+NAME: y-combinator
-#+begin_src guile :tangle ../src/generated/fixed-points-y-combinator.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/fixed-points-y-combinator.scm :mkdirp yes
 ;; Y combinator: a fixed point combinator that enables recursion
 (define (Y f)
   ((lambda (x) (f (lambda (y) ((x x) y))))
@@ -488,7 +488,7 @@ graph TD
 * Fixed Points in Numerical Methods
 
 #+NAME: numerical-methods
-#+begin_src guile :tangle ../src/generated/fixed-points-numerical.scm :mkdirp yes
+#+begin_src scheme :tangle ../src/generated/fixed-points-numerical.scm :mkdirp yes
 ;; Fixed point methods for solving equations
 
 ;; Newton's method as fixed point iteration
