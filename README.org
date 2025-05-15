@@ -79,6 +79,7 @@ files.
 The repository includes several comprehensive guides converted to Org Mode format:
 
 - [[file:examples/category-theory-guide.org][Category Theory and Strange Loops: A Comprehensive Guide]]
+- [[file:examples/concepts.org][Core Category Theory Concepts and Terminology]]
 - [[file:examples/functors-monads-guide.org][Functors and Monads Guide]]
 - [[file:examples/fixed-points-guide.org][Fixed Points in Category Theory]]
 - [[file:examples/type-theory-guide.org][Type Theory and Category Theory]]
@@ -96,7 +97,8 @@ This project uses Make to simplify working with the code and documentation. Here
 | ~make tangle-file FILE=path~ | Generate code from a specific org notebook    |
 | ~make mermaid~        | Generate diagrams from Mermaid definitions           |
 | ~make test~           | Run tests for the category theory implementation     |
-| ~make md2org~         | Convert Markdown guides to Org Mode format           |
+| ~make md2org~         | Convert all Markdown guides to Org Mode format       |
+| ~make md2org-file FILE=path~ | Convert a specific Markdown file to Org Mode  |
 | ~make clean~          | Remove generated files and start fresh               |
 
 For Emacs users, you can also:
