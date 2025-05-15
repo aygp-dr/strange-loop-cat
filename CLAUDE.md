@@ -12,6 +12,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Initialize project (one-time setup): `make init`
 - Run all build processes: `make all`
 - Run a generated Scheme file: `guile src/generated/file-name.scm`
+- Tangle a specific org file: `make tangle-file FILE=examples/filename.org`
+- Check Guile version: `guile --version` (Guile 3.x is used in this project)
 
 ## Code Style Guidelines
 - Use Scheme/Guile conventions (kebab-case for names)
@@ -25,6 +27,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - For diagrams, use Mermaid syntax with consistent node/edge styling
 - Org files should include appropriate header args (`:noweb yes :eval yes`)
 - Ensure all Org files have proper #+PROPERTY settings for Babel compatibility
+- When adding new source blocks in org files, maintain the tangling structure with appropriate `:tangle` directives
 
 ## Project Architecture
 
@@ -47,7 +50,7 @@ This project explores category theory concepts through interactive Org-mode note
    - Generated from code blocks in the notebooks
    - Used for testing and demonstration
 
-4. **Mermaid Diagrams** (images/diagrams/*.mmd)
+4. **Mermaid Diagrams** (docs/diagrams/*.mmd)
    - Visual representations of categorical concepts
    - Generated from Mermaid code blocks in Org files
    - Compiled to PNG images with `make mermaid`
@@ -66,4 +69,19 @@ This project explores category theory concepts through interactive Org-mode note
 - Natural transformations
 - Strange loops and self-reference
 
+### Development Notes
+- The project is structured around literate programming using Org mode
+- Code blocks in .org files tangle to create Scheme implementation files
+- The core category theory implementation is in src/guile/category.scm
+- Exercise solutions should be placed in src/generated/exercises/
+- Diagrams are defined using Mermaid and should be placed in docs/diagrams/
+- For developing new features, follow the existing pattern of:
+  1. Add explanatory content in an org file
+  2. Implement code in Scheme code blocks with proper tangle directives
+  3. Add visualization using Mermaid diagrams
+  4. Use the make system to generate all derived files
+
 To explore a new concept, start by examining the relevant notebook in the examples/ directory, which contains both explanations and executable code.
+
+### Guile 3 Compatibility
+The project uses Guile 3.x as its Scheme implementation. Some files have compatibility changes marked with .compat.bak extensions. If working with Guile-specific features, ensure compatibility with Guile 3.x.

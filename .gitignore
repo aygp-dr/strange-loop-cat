@@ -62,3 +62,6 @@ yarn-error.log*
 # Temporary files
 **/.tmp/
 **/temp/
+*.bak
+*.compat.bak
+test-guile3.scm
