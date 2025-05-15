@@ -1,8 +1,12 @@
+(use-modules (ice-9 format)
+             (srfi srfi-1)  ; List library
+             (srfi srfi-11)) ; let-values
+
 ;; Fixed point methods for solving equations
 
 ;; Newton's method as fixed point iteration
-(define (newton-method f df x0 
-                       #:optional #:key
+(define* (newton-method f df x0 
+                       #:optional
                        (tolerance 0.00001)
                        (max-iterations 100))
   ;; Transform the equation f(x) = 0 into a fixed point problem
@@ -24,8 +28,8 @@
           result (* result result)))
 
 ;; Method of successive approximations for numerical integration
-(define (successive-approximation-integral f a b initial
-                                          #:optional #:key
+(define* (successive-approximation-integral f a b initial
+                                          #:optional
                                           (steps 100)
                                           (tolerance 0.00001))
   ;; The integration operator as a fixed point problem

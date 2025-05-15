@@ -1,4 +1,5 @@
 (use-modules (oop goops)
+             (srfi srfi-11)    ; let-values
              (ice-9 format))
 
 ;; Define contract system

@@ -1,5 +1,6 @@
 (use-modules (ice-9 format)
              (srfi srfi-1)     ; List library
+             (srfi srfi-11)    ; let-values 
              (srfi srfi-26)    ; Cut/cute partial application
              (srfi srfi-42)    ; Eager comprehensions
              (ice-9 match))    ; Pattern matching
@@ -7,9 +8,9 @@
 (display "Modules loaded successfully.\n")
 
 ;; Continuous fixed point finder
-(define (fixed-point f initial-guess #:optional #:key
-                     (tolerance 0.00001)
-                     (max-iterations 1000))
+(define* (fixed-point f initial-guess #:optional
+                      (tolerance 0.00001)
+                      (max-iterations 1000))
   (let loop ((guess initial-guess)
              (iterations 0))
     (let ((next (f guess)))

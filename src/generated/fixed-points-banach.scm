@@ -28,8 +28,8 @@
   (< (approximate-lipschitz-constant f domain-min domain-max samples) 1.0))
 
 ;; Apply Banach theorem to find fixed point
-(define (banach-fixed-point f domain-min domain-max
-                           #:optional #:key
+(define* (banach-fixed-point f domain-min domain-max
+                           #:optional
                            (samples 50)
                            (initial-guess (/ (+ domain-min domain-max) 2))
                            (tolerance 0.00001))

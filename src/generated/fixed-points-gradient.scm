@@ -1,6 +1,10 @@
+(use-modules (ice-9 format)
+             (srfi srfi-1)  ; List library
+             (srfi srfi-11)) ; let-values
+
 ;; Gradient descent with convergence tracking
-(define (gradient-descent f gradient initial-point
-                         #:optional #:key
+(define* (gradient-descent f gradient initial-point
+                         #:optional
                          (learning-rate 0.01)
                          (tolerance 0.00001)
                          (max-iterations 1000))
