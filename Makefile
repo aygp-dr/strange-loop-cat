@@ -1,4 +1,4 @@
-.PHONY: all init clean mermaid docs test scheme-test tangle tangle-file
+.PHONY: all init clean mermaid docs test scheme-test tangle tangle-file md2org
 
 # Default target
 all: mermaid docs
@@ -74,3 +74,9 @@ tangle-file:
 			--eval "(setq org-babel-tangle-create-missing-dirs-and-files t)" \
 			--eval '(org-babel-tangle-file "$(FILE)")'; \
 	fi
+
+# Convert Markdown guides to Org Mode
+md2org:
+	@echo "Converting Markdown guides to Org Mode..."
+	@python3 scripts/md2org.py -r docs/guides -o examples
+	@echo "Conversion completed. Files saved to examples/ directory."

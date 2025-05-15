@@ -74,6 +74,17 @@ files.
 - Douglas Hofstadter's "Gödel, Escher, Bach: An Eternal Golden Braid"
 - [[file:docs/guides/category-theory-interviews.org][Category Theory for Interviews: Core Concepts with GEB-Style Metaphors]]
 
+** Comprehensive Guides
+
+The repository includes several comprehensive guides converted to Org Mode format:
+
+- [[file:examples/category-theory-guide.org][Category Theory and Strange Loops: A Comprehensive Guide]]
+- [[file:examples/functors-monads-guide.org][Functors and Monads Guide]]
+- [[file:examples/fixed-points-guide.org][Fixed Points in Category Theory]]
+- [[file:examples/type-theory-guide.org][Type Theory and Category Theory]]
+- [[file:examples/scheme-lisp-guide.org][Scheme and Lisp for Category Theory]]
+- [[file:examples/yoneda-lemma-guide.org][The Yoneda Lemma: Detailed Guide]]
+
 ** Essential Commands
 
 This project uses Make to simplify working with the code and documentation. Here are the essential commands:
@@ -85,6 +96,7 @@ This project uses Make to simplify working with the code and documentation. Here
 | ~make tangle-file FILE=path~ | Generate code from a specific org notebook    |
 | ~make mermaid~        | Generate diagrams from Mermaid definitions           |
 | ~make test~           | Run tests for the category theory implementation     |
+| ~make md2org~         | Convert Markdown guides to Org Mode format           |
 | ~make clean~          | Remove generated files and start fresh               |
 
 For Emacs users, you can also:
