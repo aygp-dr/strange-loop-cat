@@ -34,12 +34,12 @@ Although initially considered somewhat obscure outside specialist circles, the Y
 
 Informally, the Yoneda Lemma tells us that an object can be completely understood by studying the collection of morphisms *into* it (or *from* it). In other words, an object is fully characterized by how other objects relate to it.
 
-More formally, the Yoneda Lemma states that for any locally small category ~C~ and any object ~A~ in ~C~, there is a natural bijection between:
-- The set of natural transformations from the representable functor ~Hom(A, -)~ to any functor ~F~
-- The set ~F(A)~
+More formally, the Yoneda Lemma states that for any locally small category $\mathcal{C}$ and any object $A$ in $\mathcal{C}$, there is a natural bijection between:
+- The set of natural transformations from the representable functor $\text{Hom}(A, -)$ to any functor $F$
+- The set $F(A)$
 
 This can be written as:
-~Nat(Hom(A, -), F) ≅ F(A)~
+\[ \text{Nat}(\text{Hom}(A, -), F) \cong F(A) \]
 
 ** Loading the Category Theory Module
 
@@ -55,10 +55,10 @@ Let's begin by loading our category theory module:
 
 * Representable Functors
 
-At the heart of the Yoneda Lemma are representable functors. For an object ~A~ in a category ~C~, we have:
+At the heart of the Yoneda Lemma are representable functors. For an object $A$ in a category $\mathcal{C}$, we have:
 
-- The *covariant* representable functor ~Hom(A, -): C → Set~
-- The *contravariant* representable functor ~Hom(-, A): C^op → Set~
+- The *covariant* representable functor $\text{Hom}(A, -): \mathcal{C} \to \text{Set}$
+- The *contravariant* representable functor $\text{Hom}(-, A): \mathcal{C}^{op} \to \text{Set}$
 
 Let's implement a simple version of the covariant representable functor:
 
@@ -154,7 +154,7 @@ The key insight of the Yoneda Lemma is that this embedding is *full and faithful
 * The Yoneda Lemma Detailed
 
 The Yoneda Lemma provides a natural bijection between:
-~Nat(Hom(A, -), F) ≅ F(A)~
+\[ \text{Nat}(\text{Hom}(A, -), F) \cong F(A) \]
 
 Let's examine what this means in more concrete terms:
 
@@ -251,8 +251,8 @@ The Yoneda Lemma relates to the concept of Strange Loops in several ways:
 1. **Self-Reference**: The statement that an object can be understood through its relationships to all objects (including itself) has a self-referential quality.
 
 2. **Tangled Hierarchy**: The Yoneda Lemma establishes a correspondence between:
-   - The "lower level" F(A) (a concrete set)
-   - The "higher level" Nat(Hom(A, -), F) (natural transformations between functors)
+   - The "lower level" $F(A)$ (a concrete set)
+   - The "higher level" $\text{Nat}(\text{Hom}(A, -), F)$ (natural transformations between functors)
    
    This creates a kind of tangled hierarchy where different levels of abstraction are connected.
 
