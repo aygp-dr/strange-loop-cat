@@ -1,0 +1,15 @@
+graph TB
+    subgraph "X-Axis Reflection"
+    P1["(x,y)"] --> |"reflect-x"| P2["(x,-y)"]
+    P3["(x,0)"] --> |"reflect-x"| P3
+    end
+    
+    subgraph "Y-Axis Reflection"
+    Q1["(x,y)"] --> |"reflect-y"| Q2["(-x,y)"]
+    Q3["(0,y)"] --> |"reflect-y"| Q3
+    end
+    
+    subgraph "Origin Reflection"
+    R1["(x,y)"] --> |"reflect-origin"| R2["(-x,-y)"]
+    R3["(0,0)"] --> |"reflect-origin"| R3
+    end

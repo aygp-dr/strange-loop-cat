@@ -1,0 +1,10 @@
+graph TB
+    N((North)) --> |"turn right"| E((East))
+    E --> |"turn right"| S((South))
+    S --> |"turn right"| W((West))
+    W --> |"turn right"| N
+    
+    N2((North)) --> |"turn around"| S2((South))
+    S2 --> |"turn around"| N2
+    E2((East)) --> |"turn around"| W2((West))
+    W2 --> |"turn around"| E2
