@@ -35,7 +35,7 @@ that relates deeply to category theory and strange loops.
 Let's define a general fixed-point finder:
 
 #+NAME: fixed-point-operator
-#+begin_src guile :tangle ../src/generated/fixed-points.scm
+#+begin_src guile :tangle ../src/generated/fixed-points.scm :mkdirp yes
 ;; Continuous fixed point finder
 (define (fixed-point f initial-guess #:optional #:key
                      (tolerance 0.00001)

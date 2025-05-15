@@ -31,7 +31,7 @@ This can be written as:
 Let's begin by loading our category theory module:
 
 #+NAME: module-loading
-#+begin_src scheme :tangle "../src/generated/yoneda-module.scm"
+#+begin_src scheme :tangle "../src/generated/yoneda-module.scm" :mkdirp yes
 (add-to-load-path "../src/guile")
 (use-modules (category))
 
@@ -48,7 +48,7 @@ At the heart of the Yoneda Lemma are representable functors. For an object A in 
 Let's implement a simple version of the covariant representable functor:
 
 #+NAME: representable-functor
-#+begin_src scheme :tangle "../src/generated/yoneda-representable.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/yoneda-representable.scm" :noweb yes :mkdirp yes
 ;; First load the category module
 <<module-loading>>
 
@@ -102,7 +102,7 @@ The Yoneda embedding is a functor that embeds a category C into the functor cate
 The key insight of the Yoneda Lemma is that this embedding is *full and faithful*, which means it preserves all the structure of the original category.
 
 #+NAME: yoneda-embedding
-#+begin_src scheme :tangle "../src/generated/yoneda-embedding.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/yoneda-embedding.scm" :noweb yes :mkdirp yes
 ;; First load the category module
 <<module-loading>>
 
@@ -144,7 +144,7 @@ The Yoneda Lemma provides a natural bijection between:
 Let's examine what this means in more concrete terms:
 
 #+NAME: yoneda-lemma
-#+begin_src scheme :tangle "../src/generated/yoneda-lemma.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/yoneda-lemma.scm" :noweb yes :mkdirp yes
 ;; First load the category module
 <<module-loading>>
 

@@ -29,7 +29,7 @@ These components must satisfy certain coherence conditions (the monad laws).
 Let's begin by loading our category theory module:
 
 #+NAME: module-loading
-#+begin_src scheme :tangle "../src/generated/monads-module.scm"
+#+begin_src scheme :tangle "../src/generated/monads-module.scm" :mkdirp yes
 (add-to-load-path "../src/guile")
 (use-modules (category))
 
@@ -43,7 +43,7 @@ A monad is a special kind of endofunctor (a functor from a category to itself) t
 Let's implement a simple endofunctor to build our understanding:
 
 #+NAME: endofunctor
-#+begin_src scheme :tangle "../src/generated/monads-endofunctor.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/monads-endofunctor.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
@@ -92,7 +92,7 @@ A monad consists of an endofunctor T together with two natural transformations:
 Let's implement a simple version of these components:
 
 #+NAME: monad-structure
-#+begin_src scheme :tangle "../src/generated/monads-structure.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/monads-structure.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
@@ -138,7 +138,7 @@ Let's implement a simple version of these components:
 Let's implement a concrete example: the "Maybe" monad. This monad represents computations that might fail or return a value.
 
 #+NAME: maybe-monad
-#+begin_src scheme :tangle "../src/generated/monads-maybe.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/monads-maybe.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
@@ -224,7 +224,7 @@ Let's implement a concrete example: the "Maybe" monad. This monad represents com
 Another classic example is the List monad, which represents nondeterministic computations with multiple possible values.
 
 #+NAME: list-monad
-#+begin_src scheme :tangle "../src/generated/monads-list.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/monads-list.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
@@ -292,7 +292,7 @@ Monads have found extensive use in functional programming for:
 Let's implement a simple state monad to demonstrate these ideas:
 
 #+NAME: state-monad
-#+begin_src scheme :tangle "../src/generated/monads-state.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/monads-state.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
@@ -422,7 +422,7 @@ graph TD
 Let's implement a recursive operation using monads to illustrate this connection:
 
 #+NAME: monad-recursion
-#+begin_src scheme :tangle "../src/generated/monads-recursion.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/monads-recursion.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 

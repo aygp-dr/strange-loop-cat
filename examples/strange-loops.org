@@ -22,7 +22,7 @@ Strange loops are integral to many systems that exhibit self-reference, recursio
 Let's begin by loading our category theory module:
 
 #+NAME: module-loading
-#+begin_src scheme :tangle "../src/generated/strange-loops-module.scm"
+#+begin_src scheme :tangle "../src/generated/strange-loops-module.scm" :mkdirp yes
 (add-to-load-path "../src/guile")
 (use-modules (category))
 
@@ -46,7 +46,7 @@ Strange loops appear in various forms:
 Let's explore some of these from a categorical perspective:
 
 #+NAME: strange-loop-types
-#+begin_src scheme :tangle "../src/generated/strange-loops-types.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/strange-loops-types.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
@@ -103,7 +103,7 @@ Kurt Gödel's Incompleteness Theorems demonstrate a profound strange loop at the
 This self-reference has categorical interpretations:
 
 #+NAME: godel-categorical
-#+begin_src scheme :tangle "../src/generated/strange-loops-godel.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/strange-loops-godel.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
@@ -159,7 +159,7 @@ Fixed points provide a precise mathematical way to understand strange loops. A f
 In category theory, fixed points take on a richer structure:
 
 #+NAME: fixed-points
-#+begin_src scheme :tangle "../src/generated/strange-loops-fixed-points.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/strange-loops-fixed-points.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
@@ -228,7 +228,7 @@ Hofstadter describes "tangled hierarchies" where levels that should be separate 
 Let's explore this with an example from category theory:
 
 #+NAME: tangled-hierarchies
-#+begin_src scheme :tangle "../src/generated/strange-loops-tangled.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/strange-loops-tangled.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
@@ -279,7 +279,7 @@ Let's explore this with an example from category theory:
 Let's create a more elaborate example: a system that exhibits strange loop behavior by modeling itself and creating self-reference.
 
 #+NAME: strange-loop-system
-#+begin_src scheme :tangle "../src/generated/strange-loops-system.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/strange-loops-system.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
@@ -388,7 +388,7 @@ Hofstadter proposes that consciousness itself is a strange loop - the brain crea
 While we can't implement consciousness, we can create a simple model of self-awareness:
 
 #+NAME: consciousness-loops
-#+begin_src scheme :tangle "../src/generated/strange-loops-consciousness.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/strange-loops-consciousness.scm" :noweb yes :mkdirp yes
 ;; Load the category module
 <<module-loading>>
 
