@@ -68,7 +68,7 @@ In the standard Western 12-tone system, each octave contains 12 semitones arrang
 Fixed points in musical transformations occur when notes remain unchanged after an operation.
 
 #+NAME: musical-transformations
-#+begin_src guile :tangle ../src/generated/modular-music.scm
+#+begin_src guile :tangle ../src/generated/modular-music.scm :mkdirp yes
 ;; Define common musical intervals
 (define unison 0)
 (define semitone 1)
@@ -116,7 +116,7 @@ Fixed points in musical transformations occur when notes remain unchanged after 
 The Circle of Fifths demonstrates how repeated application of the same interval eventually returns to the starting point.
 
 #+NAME: circle-of-fifths
-#+begin_src guile :tangle ../src/generated/modular-music.scm
+#+begin_src guile :tangle ../src/generated/modular-music.scm :mkdirp yes
 ;; Generate the Circle of Fifths
 (define (circle-of-fifths starting-note)
   (let loop ((current starting-note)

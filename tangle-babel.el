@@ -12,19 +12,22 @@
       (cons '(:tangle-dir . "../src/generated")
             (assq-delete-all :tangle-dir org-babel-default-header-args)))
 
-;; Tangle the files from the project root
-(let ((default-directory "/home/aygp-dr/projects/aygp-dr/strange-loop-cat/"))
-  (message "Tangling examples/basics.org...")
-  (org-babel-tangle-file "examples/basics.org")
-  (message "Tangling examples/basics.org...done!")
+;; Get the directory containing this script
+(defvar script-dir (file-name-directory (or load-file-name buffer-file-name)))
 
-  (message "Tangling examples/functors.org...")
-  (org-babel-tangle-file "examples/functors.org")
-  (message "Tangling examples/functors.org...done!")
-
-  (message "Tangling examples/strange-loops.org...")
-  (org-babel-tangle-file "examples/strange-loops.org")
-  (message "Tangling examples/strange-loops.org...done!"))
+;; Tangle all org files
+(let ((default-directory script-dir))
+  (dolist (org-file '("examples/basics.org" 
+                      "examples/functors.org" 
+                      "examples/strange-loops.org"
+                      "examples/monads.org"
+                      "examples/yoneda.org"
+                      "examples/geb-formal-systems.org"
+                      "examples/modular-systems-and-symmetry.org"))
+    (when (file-exists-p org-file)
+      (message (concat "Tangling " org-file "..."))
+      (org-babel-tangle-file org-file)
+      (message (concat "Tangling " org-file "...done!")))))
 
 ;; Show success message
 (message "Tangling of all files completed!")

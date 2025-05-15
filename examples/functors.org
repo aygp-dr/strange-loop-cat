@@ -35,7 +35,7 @@ Let's load our category theory module first:
 Let's create two simple categories to work with:
 
 #+NAME: categories-def
-#+begin_src scheme :tangle ../src/generated/functors-categories.scm :noweb yes
+#+begin_src scheme :tangle ../src/generated/functors-categories.scm :noweb yes :mkdirp yes
 ;; First include the module loading code
 <<module-loading>>
 
@@ -67,7 +67,7 @@ Let's create two simple categories to work with:
 Now let's define a functor F from category C to category D:
 
 #+NAME: functor-impl
-#+begin_src scheme :tangle ../src/generated/functors-implementation.scm :noweb yes
+#+begin_src scheme :tangle ../src/generated/functors-implementation.scm :noweb yes :mkdirp yes
 ;; First include categories definition
 <<categories-def>>
 
@@ -178,7 +178,7 @@ G(X) ---G(f)--→ G(Y)
 Let's define two functors and a natural transformation between them:
 
 #+NAME: natural-transformation-impl
-#+begin_src scheme :tangle ../src/generated/functors-natural-transformation.scm :noweb yes
+#+begin_src scheme :tangle ../src/generated/functors-natural-transformation.scm :noweb yes :mkdirp yes
 ;; First include functor implementation
 <<functor-impl>>
 

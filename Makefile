@@ -1,4 +1,4 @@
-.PHONY: all init clean mermaid docs test scheme-test tangle
+.PHONY: all init clean mermaid docs test scheme-test tangle tangle-file
 
 # Default target
 all: mermaid docs
@@ -59,4 +59,18 @@ scheme-test:
 
 # Tangle org files into Scheme files
 tangle: build
-	$(EMACS) --batch -l tangle-babel.el
+	$(EMACS) --batch --eval "(require 'org)" \
+		--eval "(setq org-confirm-babel-evaluate nil)" \
+		--eval "(setq org-babel-tangle-create-missing-dirs-and-files t)" \
+		-l tangle-babel.el
+
+# Tangle a specific org file
+tangle-file:
+	@if [ -z "$(FILE)" ]; then \
+		echo "Usage: make tangle-file FILE=examples/filename.org"; \
+	else \
+		$(EMACS) --batch --eval "(require 'org)" \
+			--eval "(setq org-confirm-babel-evaluate nil)" \
+			--eval "(setq org-babel-tangle-create-missing-dirs-and-files t)" \
+			--eval '(org-babel-tangle-file "$(FILE)")'; \
+	fi

@@ -43,7 +43,7 @@ First, let's load our category theory module:
 Let's create a simple category with three objects and some morphisms:
 
 #+NAME: objects-def
-#+begin_src scheme :tangle "../src/generated/basics-category.scm"
+#+begin_src scheme :tangle "../src/generated/basics-category.scm" :mkdirp yes
 ;; Create objects
 (define a (make-object "A"))
 (define b (make-object "B"))
@@ -51,7 +51,7 @@ Let's create a simple category with three objects and some morphisms:
 #+end_src
 
 #+NAME: morphisms-def
-#+begin_src scheme :tangle "../src/generated/basics-category.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/basics-category.scm" :noweb yes :mkdirp yes
 ;; First include the module loading code
 <<module-loading>>
 
@@ -78,7 +78,7 @@ Let's create a simple category with three objects and some morphisms:
 One of the key operations in a category is composition of morphisms:
 
 #+NAME: composition
-#+begin_src scheme :tangle "../src/generated/basics-composition.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/basics-composition.scm" :noweb yes :mkdirp yes
 ;; First include all the necessary definitions
 <<module-loading>>
 <<objects-def>>
@@ -138,7 +138,7 @@ The category *Set* is one of the most fundamental categories:
 
 Let's implement a simple example of the category Set:
 
-#+begin_src scheme :tangle ../src/generated/demo/basics.scm
+#+begin_src scheme :tangle ../src/generated/demo/basics.scm :mkdirp yes
 ;; Define some sets (as lists for simplicity)
 (define set-a '(1 2 3))
 (define set-b '("a" "b"))
@@ -180,7 +180,7 @@ An isomorphism in a category is a morphism
 f: A → B for which there exists a morphism 
 g: B → A such that g ∘ f = id_A and f ∘ g = id_B.
 
-#+begin_src scheme :tangle ../src/generated/demo/basics.scm
+#+begin_src scheme :tangle ../src/generated/demo/basics.scm :mkdirp yes
 ;; Create objects
 (define x (make-object "X"))
 (define y (make-object "Y"))
@@ -217,7 +217,7 @@ g: B → A such that g ∘ f = id_A and f ∘ g = id_B.
 
 Let's visualize these concepts:
 
-#+begin_src mermaid :file ../images/diagrams/mono-epi.png :tangle ../docs/diagrams/mono-epi.mmd
+#+begin_src mermaid :file ../images/diagrams/mono-epi.png :tangle ../docs/diagrams/mono-epi.mmd :mkdirp yes
 graph TD
     subgraph "Monomorphism"
     X1((X)) --> |g₁| A1((A))
@@ -240,7 +240,7 @@ A "strange loop" is a phenomenon where moving through a hierarchical system brin
 
 Let's visualize a simple strange loop:
 
-#+begin_src mermaid :file ../images/diagrams/strange-loop.png :tangle ../docs/diagrams/strange-loop.mmd
+#+begin_src mermaid :file ../images/diagrams/strange-loop.png :tangle ../docs/diagrams/strange-loop.mmd :mkdirp yes
 graph TD
     A((A)) --> |f| B((B))
     B --> |g| C((C))
@@ -262,7 +262,7 @@ This is similar to the concept of initial and terminal objects in
 categories, where certain structures cannot be "reached" from within
 the system itself.
 
-#+begin_src mermaid :file ../images/diagrams/godel-reference.png :tangle ../docs/diagrams/godel-reference.mmd
+#+begin_src mermaid :file ../images/diagrams/godel-reference.png :tangle ../docs/diagrams/godel-reference.mmd :mkdirp yes
 graph TD
     A((Formal System)) --> |"Contains"| B((Statements))
     B --> |"Some refer to"| A
@@ -278,7 +278,7 @@ Let's put everything together in a complete example that demonstrates
 tangling:
 
 #+NAME: complete-category-example
-#+begin_src scheme :tangle "../src/generated/complete-basics.scm" :noweb yes
+#+begin_src scheme :tangle "../src/generated/complete-basics.scm" :noweb yes :mkdirp yes
 ;; First include the module loading code
 <<module-loading>>
 
