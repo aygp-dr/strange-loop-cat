@@ -21,6 +21,178 @@ A category consists of:
 
 Let's explore these concepts interactively using Guile Scheme.
 
+** Category Theory Glossary
+
+*** Core Components
+
+**** Objects
+- *Definition*: The fundamental entities in a category
+- *Notation*: Often denoted as ~A~, ~B~, ~C~, etc.
+- *Examples*: 
+  - In *Set*: Sets like ~ℕ~, ~ℝ~, ~{1,2,3}~
+  - In *Grp*: Groups like ~(ℤ,+)~, ~(ℝ⁺,×)~
+  - In *Top*: Topological spaces
+  - In *Vect*: Vector spaces
+- *Note*: Objects are abstract entities; their internal structure is irrelevant to the category
+
+**** Morphisms (Arrows)
+- *Definition*: Directed relationships between objects
+- *Notation*: ~f: A → B~ (morphism f from object A to object B)
+- *Also called*: Arrows, maps, transformations, functions (in some categories)
+- *Examples*:
+  - In *Set*: Functions between sets
+  - In *Grp*: Group homomorphisms
+  - In *Top*: Continuous functions
+  - In *Vect*: Linear transformations
+- *Related terms*:
+  - *Domain*: Source object of a morphism
+  - *Codomain*: Target object of a morphism
+  - *Hom-set*: ~Hom(A,B)~ is the collection of all morphisms from A to B
+
+**** Composition
+- *Definition*: Operation that combines morphisms ~f: A → B~ and ~g: B → C~ into ~g∘f: A → C~
+- *Notation*: ~g∘f~ or ~g·f~ or ~gf~
+- *Properties*:
+  - *Associativity*: ~h∘(g∘f) = (h∘g)∘f~ for any composable morphisms
+- *Examples*:
+  - In *Set*: Function composition ~(g∘f)(x) = g(f(x))~
+  - In *Grp*: Composition of homomorphisms
+- *Related terms*:
+  - *Composable morphisms*: Morphisms where the codomain of one equals the domain of the other
+
+**** Identity Morphisms
+- *Definition*: For each object A, a morphism ~id_A: A → A~ that acts as identity for composition
+- *Notation*: ~id_A~, ~1_A~
+- *Properties*:
+  - *Left identity*: ~id_B∘f = f~ for any ~f: A → B~
+  - *Right identity*: ~f∘id_A = f~ for any ~f: A → B~
+- *Examples*:
+  - In *Set*: The identity function ~id_A(x) = x~
+  - In *Grp*: The identity homomorphism
+
+*** Special Types of Morphisms
+
+**** Monomorphisms (Monic Morphisms)
+- *Definition*: A morphism ~m: A → B~ such that for all morphisms ~g₁, g₂: X → A~, if ~m∘g₁ = m∘g₂~, then ~g₁ = g₂~
+- *Intuition*: "Left-cancellable" morphisms; generalize injective functions
+- *Examples*:
+  - In *Set*: Injective functions
+  - In *Grp*: Injective group homomorphisms
+
+**** Epimorphisms (Epic Morphisms)
+- *Definition*: A morphism ~e: A → B~ such that for all morphisms ~g₁, g₂: B → X~, if ~g₁∘e = g₂∘e~, then ~g₁ = g₂~
+- *Intuition*: "Right-cancellable" morphisms; generalize surjective functions
+- *Examples*:
+  - In *Set*: Surjective functions
+  - In *Grp*: Surjective group homomorphisms
+
+**** Isomorphisms
+- *Definition*: A morphism ~f: A → B~ for which there exists a morphism ~g: B → A~ such that ~g∘f = id_A~ and ~f∘g = id_B~
+- *Notation*: ~A ≅ B~ (isomorphic objects)
+- *Intuition*: Objects are "essentially the same" from category perspective
+- *Examples*:
+  - In *Set*: Bijective functions
+  - In *Grp*: Bijective group homomorphisms that preserve group structure
+
+**** Endomorphisms
+- *Definition*: A morphism ~f: A → A~ (domain equals codomain)
+- *Examples*:
+  - In *Set*: Functions from a set to itself
+  - In *Grp*: Group homomorphisms from a group to itself
+
+**** Automorphisms
+- *Definition*: An isomorphism ~f: A → A~ (an invertible endomorphism)
+- *Examples*:
+  - In *Set*: Bijective functions from a set to itself
+  - In *Grp*: Invertible group homomorphisms from a group to itself
+
+*** Special Types of Objects
+
+**** Initial Objects
+- *Definition*: An object ~I~ such that for any object ~A~, there exists exactly one morphism ~I → A~
+- *Examples*:
+  - In *Set*: Empty set ~∅~
+  - In *Grp*: Trivial group ~{e}~
+
+**** Terminal Objects
+- *Definition*: An object ~T~ such that for any object ~A~, there exists exactly one morphism ~A → T~
+- *Examples*:
+  - In *Set*: Any singleton set ~{*}~
+  - In *Grp*: Trivial group ~{e}~
+
+**** Zero Objects
+- *Definition*: An object that is both initial and terminal
+- *Examples*:
+  - In *Vect*: The zero vector space ~{0}~
+  - In *Ab*: The trivial group ~{0}~
+
+*** Category Properties and Structures
+
+**** Diagrams and Commutation
+- *Definition*: A diagram commutes if all paths with the same start and end points yield the same morphism
+- *Notation*: Often represented with commutative diagrams like squares or triangles
+- *Examples*:
+  #+begin_example
+  A ---f---> B
+  |         |
+  g         h
+  |         |
+  v         v
+  C ---j---> D
+  #+end_example
+  Commutes if ~h∘f = j∘g~
+
+**** Limits and Colimits
+- *Definition*: Universal constructions that represent "best" solutions to certain problems
+- *Examples*:
+  - *Products*: ~A×B~ with projections ~π₁: A×B → A~ and ~π₂: A×B → B~
+  - *Coproducts*: ~A⊔B~ with injections ~i₁: A → A⊔B~ and ~i₂: B → A⊔B~
+  - *Equalizers*: Objects representing where two morphisms agree
+  - *Coequalizers*: Objects representing quotients by equivalence relations
+
+**** Functors
+- *Definition*: Structure-preserving maps between categories
+- *Notation*: ~F: C → D~
+- *Types*:
+  - *Covariant functors*: Preserve direction of morphisms
+  - *Contravariant functors*: Reverse direction of morphisms
+  - *Endofunctors*: Functors from a category to itself
+
+**** Natural Transformations
+- *Definition*: Morphisms between functors that preserve structure
+- *Notation*: ~η: F ⇒ G~
+- *Examples*:
+  - For functors F,G: C → D, a family of morphisms ~η_A: F(A) → G(A)~ for each object A in C
+
+*** Properties of Categories
+
+- *Locally small category*: ~Hom(A,B)~ is a set for all objects A,B
+- *Small category*: Both objects and morphisms form sets
+- *Large category*: Objects or morphisms might not form a set
+- *Discrete category*: Only identity morphisms
+- *Thin category*: At most one morphism between any two objects
+- *Groupoid*: Every morphism is an isomorphism
+- *Concrete category*: Objects are sets with structure, morphisms are structure-preserving functions
+
+*** Common Examples of Categories
+
+- *Set*: Sets and functions
+- *Grp*: Groups and group homomorphisms
+- *Ab*: Abelian groups and group homomorphisms
+- *Ring*: Rings and ring homomorphisms
+- *Top*: Topological spaces and continuous functions
+- *Vect*: Vector spaces and linear transformations
+- *Man*: Manifolds and smooth maps
+- *Pos*: Partially ordered sets and order-preserving functions
+- *Cat*: Small categories and functors
+
+*** Categorical Constructions
+
+- *Opposite category*: ~C^op~ has same objects as C but directions of morphisms reversed
+- *Product category*: ~C×D~ has pairs of objects and component-wise morphisms
+- *Slice category*: ~C/A~ has objects that are morphisms to A
+- *Functor category*: ~[C,D]~ has functors as objects, natural transformations as morphisms
+
 ** Loading the Category Module
 
 First, let's load our category theory module:

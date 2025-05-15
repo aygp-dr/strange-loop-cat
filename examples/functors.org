@@ -273,7 +273,7 @@ This is reminiscent of the "tangled hierarchies" described in Gödel, Escher, Ba
 
 * The Yoneda Lemma (Preview)
 
-The Yoneda Lemma is a profound result in category theory that deals with functors and natural transformations. It states that for any object A in a locally small category C, the natural transformations from the representable functor Hom(A, -) to any functor F are in one-to-one correspondence with the elements of F(A).
+The Yoneda Lemma is a profound result in category theory that deals with functors and natural transformations. It states that for any object ~A~ in a locally small category ~C~, the natural transformations from the representable functor ~Hom(A, -)~ to any functor ~F~ are in one-to-one correspondence with the elements of ~F(A)~.
 
 This creates a deep connection between an object and the ways it can be "viewed" through morphisms - a form of categorical introspection that has connections to self-reference.
 
@@ -282,10 +282,10 @@ We'll explore this further in a dedicated notebook on the Yoneda Lemma.
 #+begin_src mermaid :file ../images/diagrams/yoneda-preview.png :tangle ../docs/diagrams/yoneda-preview.mmd :mkdirp yes
 graph LR
     A((A)) --> |f| B((B))
-    B --> |"Hom(A,-)"| HomAB(("Hom(A,B)"))
-    A --> |"Hom(A,-)"| HomAA(("Hom(A,A)"))
+    B --> |"~Hom(A,-)~"| HomAB(("~Hom(A,B)~"))
+    A --> |"~Hom(A,-)~"| HomAA(("~Hom(A,A)~"))
     
-    HomAA --> |"Hom(A,f)"| HomAB
+    HomAA --> |"~Hom(A,f)~"| HomAB
     
     style HomAA fill:#bbf,stroke:#333,stroke-width:2px
     style HomAB fill:#bbf,stroke:#333,stroke-width:2px
