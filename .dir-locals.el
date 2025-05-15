@@ -4,6 +4,7 @@
 ((nil . ((fill-column . 80)))
  (org-mode . ((org-confirm-babel-evaluate . nil)
               (org-startup-with-inline-images . t)
+              (org-babel-tangle-create-missing-dirs-and-files . t)  ;; Create dirs automatically
               (geiser-scheme-implementation . guile)
               (geiser-guile-binary . "guile3")
               (eval . (progn
