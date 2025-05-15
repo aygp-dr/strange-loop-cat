@@ -3,7 +3,7 @@
 #+EMAIL: apace@defrecord.com
 #+DATE: 2025-05-13
 #+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes :tangle yes
-#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes :tangle yes
+
 #+PROPERTY: header-args:mermaid :file ../images/diagrams/:results file :exports both
 #+OPTIONS: toc:3 num:3 
 #+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup

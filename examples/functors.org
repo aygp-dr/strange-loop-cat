@@ -3,7 +3,7 @@
 #+EMAIL: j@wal.sh
 #+DATE: 2025-05-11
 #+PROPERTY: header-args:scheme :results output :exports both :eval yes :noweb yes :tangle yes
-#+PROPERTY: header-args:guile :results output :exports both :eval yes :noweb yes :tangle yes
+
 #+PROPERTY: header-args:mermaid :file ../images/diagrams/:results file :exports both
 
 # Tangle destination for Scheme code
