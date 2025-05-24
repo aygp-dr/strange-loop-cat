@@ -1,0 +1,64 @@
+#+TITLE: Yoneda Implementation
+#+AUTHOR: Strange Loop Cat Project
+#+DATE: 2025-05-15
+#+PROPERTY: header-args:scheme :noweb yes :results output :exports both
+#+PROPERTY: header-args:mermaid :noweb yes :file ./images/diagrams/yoneda-implementation.png
+#+STARTUP: showall
+
+* Yoneda Implementation
+
+** Scheme Implementation
+
+#+begin_src scheme :tangle ../src/generated/yoneda-lemma.scm :mkdirp yes :noweb yes :results output :exports both 
+;; Yoneda Lemma in Scheme
+
+;; Define the category (simplified)
+(define-record-type <object>
+  (make-object name)
+  object?
+  (name object-name))
+
+(define-record-type <morphism>
+  (make-morphism name domain codomain)
+  morphism?
+  (name morphism-name)
+  (domain morphism-domain)
+  (codomain morphism-codomain))
+
+;; Hom functor - maps an object A to the function that gives Hom(A,X) for any X
+(define (hom A)
+  (lambda (X)
+    (filter (lambda (m)
+              (and (eq? (morphism-domain m) A)
+                   (eq? (morphism-codomain m) X)))
+            all-morphisms)))
+
+;; A generic functor F: C^op -> Set
+(define (functor-F A)
+  ;; Implementation details depend on the specific functor
+  ;; Here's a placeholder implementation
+  (list A))
+
+;; Natural transformation from Hom(A,-) to F
+(define (make-nat-trans A F element-of-FA)
+  (lambda (X)
+    ;; For each X, we need a function Hom(A,X) -> F(X)
+    (lambda (morphism-a-to-x)
+      ;; Maps each morphism A -> X to an element of F(X)
+      ;; In the Yoneda lemma, this is determined by the image of id_A
+      ;; which is element-of-FA
+      (apply-F-to-morphism F morphism-a-to-x element-of-FA))))
+
+;; Extract the element of F(A) from a natural transformation
+(define (nat-trans-to-element A F nat-trans)
+  (let ((id-A (find (lambda (m)
+                      (and (eq? (morphism-domain m) A)
+                           (eq? (morphism-codomain m) A)
+                           (equal? (morphism-name m) "id")))
+                    all-morphisms)))
+    ((nat-trans A) id-A)))
+
+;; These functions demonstrate the bijection in the Yoneda lemma
+;; make-nat-trans : A -> F -> F(A) -> Nat(Hom(A,-), F)
+;; nat-trans-to-element : A -> F -> Nat(Hom(A,-), F) -> F(A)
+#+end_src
