@@ -1,0 +1,11 @@
+#+TITLE: Testing Babel Execution
+#+AUTHOR: Aidan Pace
+#+EMAIL: apace@defrecord.com
+#+PROPERTY: header-args:scheme :results output :exports both :eval yes
+
+* Simple Test
+
+#+begin_src scheme
+(display "Hello from Babel!")
+(newline)
+#+end_src

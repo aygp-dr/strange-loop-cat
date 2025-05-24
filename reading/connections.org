@@ -1,0 +1,12 @@
+#+TITLE: Connections Between GEB, Milewski, and Riehl
+#+AUTHOR: Jason Walsh
+#+DATE: 2025-05-19
+
+* Cross-Book Concept Mapping
+** Strange Loops
+** Category Theory Fundamentals
+** Self-Reference
+
+* Implementation Ideas
+** HeavyBool Connections
+** Tangled Hierarchies

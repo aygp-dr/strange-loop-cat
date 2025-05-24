@@ -1,0 +1,24 @@
+#+TITLE: Category Theory for Programmers - Notes
+#+AUTHOR: Jason Walsh
+#+DATE: 2025-05-19
+#+PROPERTY: header-args:scheme :results output :exports both :eval yes
+
+* Chapter 1: Category: The Essence of Composition
+** Notes
+** Exercises
+*** Challenge 1: Implement the identity function
+*** Challenge 2: Implement the composition function
+*** Challenge 3: Test composition respects identity
+*** Challenge 4: Web as a category
+*** Challenge 5: Facebook as a category
+*** Challenge 6: Directed graph as a category
+
+* Chapter 2: Types and Functions
+** Notes
+** Exercises
+*** Challenge 1: Implement memoize
+*** Challenge 2: Memoize random function
+*** Challenge 3: Memoize random with seed
+*** Challenge 4: Pure vs impure functions
+*** Challenge 5: Functions from Bool to Bool
+*** Challenge 6: Category with Void, Unit, and Bool
