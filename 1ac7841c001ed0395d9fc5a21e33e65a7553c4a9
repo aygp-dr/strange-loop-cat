@@ -1,0 +1,35 @@
+Implementation notes:
+
+Thought process:
+- Identified module binding conflicts between category theory implementation and Guile core functions
+- Systematically renamed functions to avoid conflicts while maintaining semantic meaning
+- Used prefix 'category-' to clearly distinguish from core Guile functions
+- Updated all org files that reference these functions to maintain consistency
+- Fixed mermaid diagram blocks that were causing tangling issues
+
+Debugging/Issues:
+- Found warnings about overriding core binding for 'compose' and 'identity' functions
+- Discovered tangling process was failing on monads.org due to mermaid block configuration
+- Identified redundant notebooks directory containing duplicate content
+- Located orphaned .scheme file in examples directory
+
+Cleanup performed:
+- Renamed compose -> category-compose and identity -> category-identity in core module
+- Updated test-runner to use new function names
+- Fixed all org files to use new function names (basics.org, functors.org, yoneda.org)
+- Added :tangle no directive to mermaid blocks to prevent tangling conflicts
+- Removed redundant notebooks directory (9 duplicate .org files)
+- Removed orphaned examples/basics.scheme file
+- Retangled all org files to regenerate correct Scheme code
+
+Technical decisions:
+- Chose 'category-' prefix to be explicit and avoid future conflicts
+- Used replace_all flag for systematic updates across files
+- Maintained backward compatibility in the API structure
+- Verified all generated files work correctly after changes
+
+Future improvements:
+- Consider more sophisticated namespace management
+- Add more comprehensive test coverage for generated examples
+- Implement better error handling in category theory functions
+- Add validation for mermaid block configurations
