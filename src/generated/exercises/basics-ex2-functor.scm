@@ -6,8 +6,8 @@
 (define s-a (make-object "S_A"))
 (define s-b (make-object "S_B"))
 (define s-mor (make-morphism "s_mor" s-a s-b))
-(define s-id-a (identity s-a))
-(define s-id-b (identity s-b))
+(define s-id-a (category-identity s-a))
+(define s-id-b (category-identity s-b))
 (define source-cat (make-category "Source" (list s-a s-b) (list s-mor s-id-a s-id-b)))
 
 ;; Create the target category (a product category)
@@ -16,9 +16,9 @@
 (define t-c (make-object "T_C"))
 (define t-mor1 (make-morphism "t_mor1" t-a t-b))
 (define t-mor2 (make-morphism "t_mor2" t-b t-c))
-(define t-id-a (identity t-a))
-(define t-id-b (identity t-b))
-(define t-id-c (identity t-c))
+(define t-id-a (category-identity t-a))
+(define t-id-b (category-identity t-b))
+(define t-id-c (category-identity t-c))
 (define target-cat (make-category "Target" 
                                  (list t-a t-b t-c) 
                                  (list t-mor1 t-mor2 t-id-a t-id-b t-id-c)))
@@ -35,7 +35,7 @@
         (domain (caddr mor))
         (codomain (cadddr mor)))
     (cond ((equal? name "s_mor") 
-           (compose t-mor1 t-mor2))  ;; Map s_mor to composite t_mor2 ∘ t_mor1
+           (category-compose t-mor1 t-mor2))  ;; Map s_mor to composite t_mor2 ∘ t_mor1
           ((equal? name "id_S_A") t-id-a)
           ((equal? name "id_S_B") t-id-c)
           (else (error "Morphism not in source category")))))

@@ -13,7 +13,7 @@
 (define g (make-morphism "g" b c))
 
 ;; Compose morphisms g and f
-(define g-after-f (compose f g))
+(define g-after-f (category-compose f g))
 
 (display "Composition g ∘ f: ")
 (display g-after-f)

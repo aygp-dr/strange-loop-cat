@@ -18,13 +18,13 @@
     (display "Created a category with 3 objects and 2 morphisms\n")
     
     ;; Test composition
-    (let ((g-f (compose f g)))
+    (let ((g-f (category-compose f g)))
       (display "Tested morphism composition: ")
       (display (cadr g-f))
       (newline))
     
     ;; Test identity
-    (let ((id-a (identity a)))
+    (let ((id-a (category-identity a)))
       (display "Created identity morphism: ")
       (display (cadr id-a))
       (newline)))

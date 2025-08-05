@@ -99,7 +99,7 @@ Let's implement a simple version of the covariant representable functor:
 ;; Function that maps morphisms under the representable functor
 (define (functor-map-morphism m hom-a-x)
   (map (lambda (morphism-from-a)
-         (compose morphism-from-a m))
+         (category-compose morphism-from-a m))
        hom-a-x))
 
 ;; Example: Map morphism g: B → C on Hom(A, B)
@@ -231,7 +231,7 @@ An object in category theory isn't defined by its "internal structure" but by ho
 
 Let's visualize this with a diagram:
 
-#+begin_src mermaid :file ../images/diagrams/yoneda-concept.mmd :mkdirp yes
+#+begin_src mermaid :file ../images/diagrams/yoneda-concept.mmd :mkdirp yes :tangle no
 graph TD
     A((A)) --> |"~Hom(A,-)~"| YA["~y(A) = Functor~"]
     
@@ -258,7 +258,7 @@ The Yoneda Lemma relates to the concept of Strange Loops in several ways:
 
 3. **Emergent Understanding**: Just as Gödel's Incompleteness Theorem shows how formal systems can make statements about themselves, the Yoneda Lemma shows how categories can "introspect" their own objects.
 
-#+begin_src mermaid :file ../images/diagrams/yoneda-strange-loop.mmd :mkdirp yes
+#+begin_src mermaid :file ../images/diagrams/yoneda-strange-loop.mmd :mkdirp yes :tangle no
 graph LR
     A((A)) --> |"Perspective"| HOM["~Hom(A,-)~"]
     HOM --> |"Relates to"| F["Any functor ~F~"]
@@ -351,7 +351,7 @@ Here's a simple Scheme implementation demonstrating the core concepts:
 
 The correspondence between natural transformations and functor values can be visualized:
 
-#+begin_src mermaid :file ../images/diagrams/yoneda-correspondence.mmd :mkdirp yes
+#+begin_src mermaid :file ../images/diagrams/yoneda-correspondence.mmd :mkdirp yes :tangle no
 graph TB
     subgraph "Yoneda Bijection"
     FA["F(A)"] <--> |"Natural Bijection"| NT["Nat(Hom(A,-), F)"]

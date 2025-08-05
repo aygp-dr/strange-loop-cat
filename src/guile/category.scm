@@ -4,8 +4,8 @@
   #:export (make-category
             make-object
             make-morphism
-            compose
-            identity
+            category-compose
+            category-identity
             is-functor?))
 
 ;; Basic category representation
@@ -21,7 +21,7 @@
   (list 'morphism name domain codomain))
 
 ;; Morphism composition
-(define (compose f g)
+(define (category-compose f g)
   (let ((f-name (cadr f))
         (g-name (cadr g))
         (f-domain (caddr f))
@@ -32,7 +32,7 @@
      g-codomain)))
 
 ;; Identity morphism
-(define (identity obj)
+(define (category-identity obj)
   (let ((obj-name (cadr obj)))
     (make-morphism 
      (string-append "id_" obj-name)

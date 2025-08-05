@@ -403,7 +403,7 @@ Monads, like many concepts in category theory, have connections to self-referenc
 
 Let's visualize these relationships:
 
-#+begin_src mermaid :file ../images/diagrams/monad-strange-loop.mmd
+#+begin_src mermaid :file ../images/diagrams/monad-strange-loop.mmd :tangle no
 graph TD
     A((Value)) --> |"unit"| TA["T(Value)"]
     TA --> |"f"| TB["T(Result)"]

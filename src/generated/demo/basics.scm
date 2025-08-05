@@ -1,7 +1,7 @@
 ;; Create identity morphisms
-(define id-a (identity a))
-(define id-b (identity b))
-(define id-c (identity c))
+(define id-a (category-identity a))
+(define id-b (category-identity b))
+(define id-c (category-identity c))
 
 (display "Identity morphisms:\n")
 (display id-a) (newline)
@@ -49,15 +49,15 @@
 (define g-yx (make-morphism "g" y x))
 
 ;; Check compositions
-(define f-after-g (compose g-yx f-xy))
-(define g-after-f (compose f-xy g-yx))
+(define f-after-g (category-compose g-yx f-xy))
+(define g-after-f (category-compose f-xy g-yx))
 
 (display "f ∘ g: ") (display f-after-g) (newline)
 (display "g ∘ f: ") (display g-after-f) (newline)
 
 ;; Compare with identities
-(define id-x (identity x))
-(define id-y (identity y))
+(define id-x (category-identity x))
+(define id-y (category-identity y))
 
 (display "id_X: ") (display id-x) (newline)
 (display "id_Y: ") (display id-y) (newline)

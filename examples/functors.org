@@ -43,16 +43,16 @@ Let's create two simple categories to work with:
 (define c-obj1 (make-object "C1"))
 (define c-obj2 (make-object "C2"))
 (define c-mor (make-morphism "f" c-obj1 c-obj2))
-(define c-id1 (identity c-obj1))
-(define c-id2 (identity c-obj2))
+(define c-id1 (category-identity c-obj1))
+(define c-id2 (category-identity c-obj2))
 (define cat-c (make-category "C" (list c-obj1 c-obj2) (list c-mor c-id1 c-id2)))
 
 ;; Category D
 (define d-obj1 (make-object "D1"))
 (define d-obj2 (make-object "D2"))
 (define d-mor (make-morphism "g" d-obj1 d-obj2))
-(define d-id1 (identity d-obj1))
-(define d-id2 (identity d-obj2))
+(define d-id1 (category-identity d-obj1))
+(define d-id2 (category-identity d-obj2))
 (define cat-d (make-category "D" (list d-obj1 d-obj2) (list d-mor d-id1 d-id2)))
 
 ;; Display our categories
@@ -203,7 +203,7 @@ Let's define two functors and a natural transformation between them:
 (define (eta obj)
   (let ((f-obj (functor-obj obj))
         (g-obj (functor-g-obj obj)))
-    (identity f-obj)))
+    (category-identity f-obj)))
 
 ;; Let's verify the naturality condition for morphism f: C1 → C2
 (display "Natural transformation components:\n")
@@ -617,8 +617,8 @@ This section provides a dedicated space to work on the exercises. You can modify
 (display " (reversed: Y ← X)") (newline)
 
 ;; Check compositional property: F(g ∘ f) = F(f) ∘ F(g) - order reversed!
-(define s-g-f (compose s-f s-g))
-(define t-p-q (compose t-q t-p))  ;; Note the reverse order!
+(define s-g-f (category-compose s-f s-g))
+(define t-p-q (category-compose t-q t-p))  ;; Note the reverse order!
 
 (display "\nTesting compositional property:\n")
 (display "g ∘ f in source: ") (display s-g-f) (newline)
@@ -657,7 +657,7 @@ This section provides a dedicated space to work on the exercises. You can modify
 
 (define (functor-f-mor mor)
   (let ((name (cadr mor)))
-    (cond ((equal? name "f") (compose d-p d-q))  ;; F maps f to q ∘ p
+    (cond ((equal? name "f") (category-compose d-p d-q))  ;; F maps f to q ∘ p
           (else (error "Morphism not in source category")))))
 
 ;; Define second functor G: C → D
@@ -675,7 +675,7 @@ This section provides a dedicated space to work on the exercises. You can modify
 ;; For each object X in C, we need a morphism α_X: F(X) → G(X)
 (define (alpha obj)
   (cond ((equal? obj c-a) d-p)           ;; α_A: F(A) → G(A), or X → Y
-        ((equal? obj c-b) (identity d-z)) ;; α_B: F(B) → G(B), or Z → Z (identity)
+        ((equal? obj c-b) (category-identity d-z)) ;; α_B: F(B) → G(B), or Z → Z (category-identity)
         (else (error "Object not in source category"))))
 
 ;; Natural transformation β: G ⇒ F
@@ -684,7 +684,7 @@ This section provides a dedicated space to work on the exercises. You can modify
 ;; from Y to X in our example category D. This is intentional to show the constraints.
 (define (beta obj)
   (cond ((equal? obj c-a) (make-morphism "impossible" d-y d-x))  ;; β_A: G(A) → F(A), or Y → X (would need to exist)
-        ((equal? obj c-b) (identity d-z))                       ;; β_B: G(B) → F(B), or Z → Z (identity)
+        ((equal? obj c-b) (category-identity d-z))                       ;; β_B: G(B) → F(B), or Z → Z (category-identity)
         (else (error "Object not in source category"))))
 
 ;; Demonstrate the natural transformations
@@ -705,8 +705,8 @@ This section provides a dedicated space to work on the exercises. You can modify
 (display "α_B: F(B) → G(B) = ") (display (alpha c-b)) (newline)
 
 ;; Check naturality condition: α_B ∘ F(f) = G(f) ∘ α_A
-(define left-side (compose (functor-f-mor c-f) (alpha c-b)))
-(define right-side (compose (alpha c-a) (functor-g-mor c-f)))
+(define left-side (category-compose (functor-f-mor c-f) (alpha c-b)))
+(define right-side (category-compose (alpha c-a) (functor-g-mor c-f)))
 
 (display "\nChecking naturality condition for α:\n")
 (display "α_B ∘ F(f) = ") (display left-side) (newline)

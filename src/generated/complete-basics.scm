@@ -15,20 +15,20 @@
 (define g (make-morphism "g" b c))
 
 ;; Create identity morphisms
-(define id-a (identity a))
-(define id-b (identity b))
-(define id-c (identity c))
+(define id-a (category-identity a))
+(define id-b (category-identity b))
+(define id-c (category-identity c))
 
 ;; Create composition
-(define g-after-f (compose f g))
+(define g-after-f (category-compose f g))
 
 ;; Extra objects for isomorphism example
 (define x (make-object "X"))
 (define y (make-object "Y"))
 (define f-xy (make-morphism "f" x y))
 (define g-yx (make-morphism "g" y x))
-(define f-after-g (compose g-yx f-xy))
-(define g-after-f (compose f-xy g-yx))
+(define f-after-g (category-compose g-yx f-xy))
+(define g-after-f (category-compose f-xy g-yx))
 
 ;; Display results
 (display "=== CATEGORY THEORY BASICS ===\n\n")

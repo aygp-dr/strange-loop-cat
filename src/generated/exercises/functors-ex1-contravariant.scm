@@ -66,8 +66,8 @@
 (display " (reversed: Y ← X)") (newline)
 
 ;; Check compositional property: F(g ∘ f) = F(f) ∘ F(g) - order reversed!
-(define s-g-f (compose s-f s-g))
-(define t-p-q (compose t-q t-p))  ;; Note the reverse order!
+(define s-g-f (category-compose s-f s-g))
+(define t-p-q (category-compose t-q t-p))  ;; Note the reverse order!
 
 (display "\nTesting compositional property:\n")
 (display "g ∘ f in source: ") (display s-g-f) (newline)

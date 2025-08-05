@@ -36,7 +36,7 @@
 ;; Function that maps morphisms under the representable functor
 (define (functor-map-morphism m hom-a-x)
   (map (lambda (morphism-from-a)
-         (compose morphism-from-a m))
+         (category-compose morphism-from-a m))
        hom-a-x))
 
 ;; Example: Map morphism g: B → C on Hom(A, B)

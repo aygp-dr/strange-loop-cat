@@ -19,10 +19,10 @@
 (define f-bd (make-morphism "f_BD" b d))
 
 ;; Create compositions
-(define f-ab-bc (compose f-ab f-bc))  ;; Should be equivalent to f-ac
-(define f-bc-cd (compose f-bc f-cd))  ;; Should be equivalent to f-bd
-(define f-cd-da (compose f-cd f-da))  ;; Should be equivalent to a loop
-(define f-da-ab (compose f-da f-ab))  ;; Should be equivalent to a loop
+(define f-ab-bc (category-compose f-ab f-bc))  ;; Should be equivalent to f-ac
+(define f-bc-cd (category-compose f-bc f-cd))  ;; Should be equivalent to f-bd
+(define f-cd-da (category-compose f-cd f-da))  ;; Should be equivalent to a loop
+(define f-da-ab (category-compose f-da f-ab))  ;; Should be equivalent to a loop
 
 ;; Create a category
 (define square-cat 

@@ -24,7 +24,7 @@
 
 (define (functor-f-mor mor)
   (let ((name (cadr mor)))
-    (cond ((equal? name "f") (compose d-p d-q))  ;; F maps f to q ∘ p
+    (cond ((equal? name "f") (category-compose d-p d-q))  ;; F maps f to q ∘ p
           (else (error "Morphism not in source category")))))
 
 ;; Define second functor G: C → D
@@ -42,7 +42,7 @@
 ;; For each object X in C, we need a morphism α_X: F(X) → G(X)
 (define (alpha obj)
   (cond ((equal? obj c-a) d-p)           ;; α_A: F(A) → G(A), or X → Y
-        ((equal? obj c-b) (identity d-z)) ;; α_B: F(B) → G(B), or Z → Z (identity)
+        ((equal? obj c-b) (category-identity d-z)) ;; α_B: F(B) → G(B), or Z → Z (category-identity)
         (else (error "Object not in source category"))))
 
 ;; Natural transformation β: G ⇒ F
@@ -51,7 +51,7 @@
 ;; from Y to X in our example category D. This is intentional to show the constraints.
 (define (beta obj)
   (cond ((equal? obj c-a) (make-morphism "impossible" d-y d-x))  ;; β_A: G(A) → F(A), or Y → X (would need to exist)
-        ((equal? obj c-b) (identity d-z))                       ;; β_B: G(B) → F(B), or Z → Z (identity)
+        ((equal? obj c-b) (category-identity d-z))                       ;; β_B: G(B) → F(B), or Z → Z (category-identity)
         (else (error "Object not in source category"))))
 
 ;; Demonstrate the natural transformations
@@ -72,8 +72,8 @@
 (display "α_B: F(B) → G(B) = ") (display (alpha c-b)) (newline)
 
 ;; Check naturality condition: α_B ∘ F(f) = G(f) ∘ α_A
-(define left-side (compose (functor-f-mor c-f) (alpha c-b)))
-(define right-side (compose (alpha c-a) (functor-g-mor c-f)))
+(define left-side (category-compose (functor-f-mor c-f) (alpha c-b)))
+(define right-side (category-compose (alpha c-a) (functor-g-mor c-f)))
 
 (display "\nChecking naturality condition for α:\n")
 (display "α_B ∘ F(f) = ") (display left-side) (newline)
