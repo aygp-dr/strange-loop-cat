@@ -1,4 +1,4 @@
-.PHONY: all init clean mermaid docs test scheme-test tangle tangle-file detangle detangle-file org-lint org-lint-file md2org md2org-file
+.PHONY: all init clean mermaid docs test scheme-test tangle tangle-file detangle detangle-file org-lint org-lint-file md2org md2org-file emacs-session emacs-stop emacs-status emacs-attach
 
 # Default target
 all: mermaid docs
@@ -17,10 +17,15 @@ images/diagrams:
 src/generated:
 	mkdir -p $@
 
+# Project Variables
+PROJECT_NAME ?= strange-loop-cat
+PROJECT_ROOT ?= $(shell pwd)
+
 # Variables
 GUILE = guile3
 EMACS = emacs
 MERMAID_CLI = npx @mermaid-js/mermaid-cli
+TMUX_SESSION = $(PROJECT_NAME)
 MERMAID_FILES = $(wildcard images/diagrams/*.mmd) $(wildcard docs/diagrams/*.mmd)
 MERMAID_PNGS = $(patsubst %.mmd,%.png,$(MERMAID_FILES))
 GUIDE_FILES = $(wildcard examples/*-guide.org)
@@ -119,4 +124,43 @@ org-lint-file:
 		echo "Usage: make org-lint-file FILE=examples/filename.org"; \
 	else \
 		$(EMACS) --batch -l scripts/tangle-config.el --eval '(lint-file "$(FILE)")'; \
+	fi
+
+# Emacs/tmux session management for interactive Scheme development
+emacs-session: $(PROJECT_NAME).el
+	@if tmux has-session -t $(TMUX_SESSION) 2>/dev/null; then \
+		echo "Session $(TMUX_SESSION) already exists. Use 'make emacs-attach' to attach."; \
+	else \
+		echo "Starting tmux session $(TMUX_SESSION) with project-specific Emacs..."; \
+		tmux new-session -d -s $(TMUX_SESSION) "$(EMACS) -nw -Q -l $(PROJECT_NAME).el"; \
+		echo "Session started. TTY: $$(tmux list-panes -t $(TMUX_SESSION) -F '#{pane_tty}')"; \
+		echo "Use 'make emacs-attach' to attach to the session."; \
+	fi
+
+# Stop the tmux/Emacs session
+emacs-stop:
+	@if tmux has-session -t $(TMUX_SESSION) 2>/dev/null; then \
+		echo "Stopping tmux session $(TMUX_SESSION)..."; \
+		tmux kill-session -t $(TMUX_SESSION); \
+	else \
+		echo "No session $(TMUX_SESSION) found."; \
+	fi
+
+# Check session status and get TTY
+emacs-status:
+	@if tmux has-session -t $(TMUX_SESSION) 2>/dev/null; then \
+		echo "Session $(TMUX_SESSION) is running."; \
+		echo "TTY: $$(tmux list-panes -t $(TMUX_SESSION) -F '#{pane_tty}')"; \
+		echo "Pane info:"; \
+		tmux list-panes -t $(TMUX_SESSION); \
+	else \
+		echo "No session $(TMUX_SESSION) found."; \
+	fi
+
+# Attach to the tmux/Emacs session
+emacs-attach:
+	@if tmux has-session -t $(TMUX_SESSION) 2>/dev/null; then \
+		tmux attach-session -t $(TMUX_SESSION); \
+	else \
+		echo "No session $(TMUX_SESSION) found. Use 'make emacs-session' to start one."; \
 	fi
